@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XP3 Timeline - Ultimate Polish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow-ui: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --text-dark: #2c3e50;
+            --primary: #FFD700;
+        }
+
+        body {
+            margin: 0; padding: 0; overflow: hidden; height: 100dvh; width: 100vw;
+            font-family: 'Nunito', sans-serif; background: #2c3e50;
+            user-select: none; touch-action: none; display: flex; flex-direction: column;
+        }
+
+        /* --- LE MONDE --- */
+        #game-viewport { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
+        #world-track { display: flex; height: 100%; width: 400%; will-change: transform; transition: transform 0.1s linear; }
+        .era-slide { flex: 1; height: 100%; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+
+        /* Décors & Gradients */
+        .slide-1 { background: linear-gradient(to bottom, #1a237e, #4a148c); }
+        .slide-2 { background: linear-gradient(to bottom, #fdd835, #fbc02d); }
+        .slide-3 { background: linear-gradient(to bottom, #4fc3f7, #81c784); }
+        .slide-4 { background: linear-gradient(to bottom, #b0bec5, #eceff1); }
+
+        /* Éléments d'Ambiance Animés */
+        .bg-stars { position: absolute; top:0; left:0; width:100%; height:100%; background-image: radial-gradient(white 2px, transparent 2px); background-size: 50px 50px; opacity: 0.5; animation: twinkle 4s infinite; }
+        
+        .sun { position: absolute; top: 10%; right: 20%; width: 100px; height: 100px; background: #fff59d; border-radius: 50%; box-shadow: 0 0 80px #fff176; animation: rotateSun 20s linear infinite; }
+        
+        .cloud { position: absolute; top: 15%; background: rgba(255,255,255,0.6); border-radius: 50px; filter: blur(5px); animation: floatCloud 20s linear infinite; }
+        
+        /* Props */
+        .prop { position: absolute; bottom: 22%; font-size: 10vh; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); transition: transform 0.3s; }
+        
+        /* ANIMATION SPÉCIALE FEU */
+        .fire-anim { animation: flicker 0.5s infinite alternate; transform-origin: center bottom; }
+
+        /* SOL */
+        .ground { height: 18%; width: 100%; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); border-top: 2px solid rgba(255,255,255,0.4); position: relative; }
+        
+        /* Dates */
+        .timeline-ruler { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .main-marker { position: absolute; left: 20px; top: -20px; }
+        .main-date { background: #fff; color: var(--text-dark); padding: 6px 16px; border-radius: 20px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .sub-marker { position: absolute; top: 0; height: 40%; border-left: 2px solid rgba(255,255,255,0.6); display: flex; flex-direction: column; align-items: center; }
+        .sub-date { background: rgba(255,255,255,0.8); color: #455A64; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 800; margin-top: 10px; }
+        .era-title { position: absolute; top: 40px; left: 20px; color: rgba(255,255,255,0.4); font-size: 5vh; font-weight: 900; text-transform: uppercase; letter-spacing: 5px; pointer-events: none; }
+
+        /* --- UI HUD --- */
+        .hud-top { position: absolute; top: 0; left: 0; width: 100%; padding: max(10px, env(safe-area-inset-top)) 20px 0 20px; display: grid; grid-template-columns: 1fr auto 1fr; pointer-events: none; z-index: 100; }
+        
+        .mission-panel { pointer-events: auto; grid-column: 2; background: var(--glass); backdrop-filter: blur(12px); border-radius: 0 0 24px 24px; padding: 10px 25px; box-shadow: var(--shadow-ui); display: flex; flex-direction: column; align-items: center; transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        
+        .liko-container { width: 70px; height: 70px; background: var(--primary); border-radius: 50%; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4); display: flex; justify-content: center; align-items: center; font-size: 40px; cursor: grab; animation: float 3s ease-in-out infinite; }
+        .liko-container:active { cursor: grabbing; animation: none; transform: scale(0.9); }
+
+        .team-panel { grid-column: 3; justify-self: end; display: flex; padding-top: 10px; }
+        .avatar-small { width: 36px; height: 36px; background: #fff; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; font-size: 18px; margin-left: -10px; }
+
+        /* --- NAV BAR --- */
+        .hud-bottom { position: absolute; bottom: 30px; left: 0; width: 100%; display: flex; justify-content: center; pointer-events: none; z-index: 100; }
+        .nav-bar { pointer-events: auto; width: 85%; max-width: 600px; height: 64px; background: #fff; border-radius: 32px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); padding: 6px; display: flex; align-items: center; }
+        .nav-track { flex: 1; height: 100%; background: #f0f2f5; border-radius: 26px; position: relative; overflow: hidden; display: flex; }
+        .nav-zone { flex: 1; height: 100%; opacity: 0.5; border-right: 1px solid rgba(255,255,255,0.5); cursor: pointer; transition: opacity 0.2s; }
+        .nav-zone:hover { opacity: 0.8; }
+        .nav-handle { position: absolute; left: 0; top: 0; height: 100%; width: 25%; border: 3px solid #2c3e50; border-radius: 26px; box-sizing: border-box; box-shadow: 0 0 0 2000px rgba(255,255,255,0.7); cursor: ew-resize; display: flex; justify-content: center; align-items: center; }
+        .grip { width: 4px; height: 16px; background: #2c3e50; border-radius: 2px; margin: 0 2px; }
+
+        /* --- FEEDBACK & OVERLAYS --- */
+        #ghost { position: fixed; font-size: 70px; opacity: 0; pointer-events: none; z-index: 9999; filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2)); }
+        
+        .hint-arrow { position: absolute; top: 50%; width: 60px; height: 60px; background: #ff5252; color: white; border-radius: 50%; display: none; justify-content: center; align-items: center; font-size: 30px; box-shadow: 0 10px 20px rgba(255, 82, 82, 0.4); animation: pulse 1s infinite; z-index: 200; }
+        
+        #liko-landed { position: absolute; bottom: 25%; left: 0; font-size: 70px; display: none; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+
+        /* ÉCRAN DE VICTOIRE */
+        .victory-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 2000;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.5s;
+        }
+        .victory-card {
+            background: white; padding: 40px; border-radius: 30px;
+            text-align: center; transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+        .stars { font-size: 40px; margin-bottom: 10px; }
+        .btn-next {
+            background: var(--text-dark); color: white; border: none; padding: 15px 30px;
+            border-radius: 50px; font-size: 18px; font-weight: bold; margin-top: 20px; cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: transform 0.2s;
+        }
+        .btn-next:active { transform: scale(0.95); }
+
+        /* ANIMATIONS CSS */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes bounceIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes flicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0.8; } }
+        @keyframes rotateSun { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes floatCloud { from { left: -20%; } to { left: 120%; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="game-viewport">
+        <div id="world-track">
+            
+            <div class="era-slide slide-1">
+                <div class="bg-stars"></div>
+                <div class="cloud" style="width: 150px; height: 60px; top: 10%; animation-duration: 35s;"></div>
+                
+                <div class="prop" style="left: 10%;">🌋</div>
+                <div class="prop fire-anim" style="left: 45%;">🔥</div> 
+                
+                <div class="ground">
+                    <div class="timeline-ruler">
+                        <div class="main-marker"><div class="main-date">-400 000</div></div>
+                        <div class="sub-marker" style="left: 40%;"><span class="sub-date">-30 000 (Art)</span></div>
+                        <div class="sub-marker" style="left: 70%;"><span class="sub-date">-10 000 (Agri)</span></div>
+                    </div>
+                    <div class="era-title">Préhistoire</div>
+                </div>
+            </div>
+
+            <div class="era-slide slide-2">
+                <div class="sun"></div>
+                <div class="cloud" style="width: 100px; height: 40px; top: 20%; animation-duration: 25s;"></div>
+                <div class="prop" style="left: 20%;">🐪</div>
+                <div class="prop" style="left: 60%;">🏛️</div>
+                <div class="ground">
+                    <div class="timeline-ruler">
+                        <div class="main-marker"><div class="main-date">-3 000</div></div>
+                        <div class="sub-marker" style="left: 35%;"><span class="sub-date">-753 (Rome)</span></div>
+                        <div class="sub-marker" style="left: 80%;"><span class="sub-date">-52 (Alésia)</span></div>
+                    </div>
+                    <div class="era-title">Antiquité</div>
+                </div>
+            </div>
+
+            <div class="era-slide slide-3">
+                <div class="cloud" style="width: 180px; height: 70px; top: 15%; animation-duration: 40s;"></div>
+                <div class="prop" style="left: 30%;">🏰</div>
+                <div class="prop" style="left: 70%;">⚔️</div>
+                <div class="ground">
+                    <div class="timeline-ruler">
+                        <div class="main-marker"><div class="main-date">476</div></div>
+                        <div class="sub-marker" style="left: 50%;"><span class="sub-date">800 (Sacre)</span></div>
+                        <div class="sub-marker" style="left: 90%;"><span class="sub-date">1492</span></div>
+                    </div>
+                    <div class="era-title">Moyen-Âge</div>
+                </div>
+            </div>
+
+            <div class="era-slide slide-4">
+                <div class="prop" style="left: 30%;">🏭</div>
+                <div class="prop" style="left: 80%;">🚀</div>
+                <div class="ground">
+                    <div class="timeline-ruler">
+                        <div class="main-marker"><div class="main-date">1789</div></div>
+                        <div class="sub-marker" style="left: 30%;"><span class="sub-date">1889</span></div>
+                        <div class="sub-marker" style="left: 60%;"><span class="sub-date">1945</span></div>
+                        <div class="sub-marker" style="left: 85%;"><span class="sub-date">2024</span></div>
+                    </div>
+                    <div class="era-title">Moderne</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="liko-landed">👦</div>
+    </div>
+
+    <div class="hud-top">
+        <div style="width: 40px;"></div>
+        <div class="mission-panel" id="mission-ui">
+            <span class="mission-text" style="font-size:12px; text-transform:uppercase; color:#888;">Mission</span>
+            <span class="mission-text">Trouve le feu 🔥</span>
+            <div class="liko-container" id="liko-source">👦</div>
+        </div>
+        <div class="team-panel">
+            <div class="avatar-small">👧</div>
+            <div class="avatar-small" style="z-index:2">🧑</div>
+            <div class="avatar-small" style="z-index:3">👱</div>
+        </div>
+    </div>
+
+    <div class="hint-arrow" id="arrow-l" style="left: 20px;">⬅️</div>
+    <div class="hint-arrow" id="arrow-r" style="right: 20px;">➡️</div>
+    
+    <div class="victory-overlay" id="victory-screen">
+        <div class="victory-card">
+            <div class="stars">⭐⭐⭐</div>
+            <h1 style="margin:0; font-size:32px; color:#2D3436;">Mission Réussie !</h1>
+            <p style="color:#636e72;">Liko se réchauffe près du feu.</p>
+            <div style="font-size: 60px; margin: 20px 0;">🔥👦</div>
+            <button class="btn-next" onclick="location.reload()">Niveau Suivant</button>
+        </div>
+    </div>
+
+    <div class="hud-bottom">
+        <div class="nav-bar">
+            <div class="nav-track" id="nav-track">
+                <div class="nav-zone" style="background:#1a237e" onclick="jumpTo(10)"></div>
+                <div class="nav-zone" style="background:#fbc02d" onclick="jumpTo(35)"></div>
+                <div class="nav-zone" style="background:#81c784" onclick="jumpTo(60)"></div>
+                <div class="nav-zone" style="background:#eceff1" onclick="jumpTo(85)"></div>
+                <div class="nav-handle" id="nav-handle"><div class="grip"></div><div class="grip"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ghost">👦</div>
+
+    <script>
+        const world = document.getElementById('world-track');
+        const handle = document.getElementById('nav-handle');
+        const track = document.getElementById('nav-track');
+        const liko = document.getElementById('liko-source');
+        const ghost = document.getElementById('ghost');
+        const missionUI = document.getElementById('mission-ui');
+        const victoryScreen = document.getElementById('victory-screen');
+
+        let scrollPct = 0; let isNavDrag = false; let isLikoDrag = false;
+
+        function updateWorld() {
+            const maxHandle = 75; 
+            let visualPos = Math.min(Math.max(scrollPct, 0), maxHandle);
+            handle.style.left = visualPos + '%';
+            world.style.transform = `translateX(${-visualPos * 4}vw)`;
+        }
+
+        // Tap to Jump (Nouvelle fonctionnalité UX)
+        function jumpTo(pct) {
+            scrollPct = pct;
+            updateWorld();
+        }
+
+        function onNavMove(e) {
+            if(!isNavDrag) return;
+            const rect = track.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let x = clientX - rect.left - (rect.width * 0.125);
+            scrollPct = (x / rect.width) * 100;
+            updateWorld();
+        }
+
+        handle.addEventListener('mousedown', () => isNavDrag = true);
+        handle.addEventListener('touchstart', () => isNavDrag = true);
+        window.addEventListener('mouseup', () => isNavDrag = false);
+        window.addEventListener('touchend', () => isNavDrag = false);
+        window.addEventListener('mousemove', onNavMove);
+        window.addEventListener('touchmove', onNavMove, {passive: false});
+
+        function onLikoMove(e) {
+            if(!isLikoDrag) return;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            ghost.style.left = (clientX - 35) + 'px'; ghost.style.top = (clientY - 35) + 'px';
+        }
+
+        function startLiko(e) {
+            e.preventDefault(); isLikoDrag = true; ghost.style.opacity = 1; liko.style.opacity = 0;
+            onLikoMove(e);
+            document.getElementById('arrow-l').style.display = 'none';
+            document.getElementById('arrow-r').style.display = 'none';
+        }
+
+        function endLiko(e) {
+            if(!isLikoDrag) return; isLikoDrag = false; ghost.style.opacity = 0;
+            
+            // Victoire si Préhistoire (< 20%)
+            if(scrollPct < 20) {
+                // Animation de sortie
+                missionUI.style.transform = "translateY(-150%)";
+                document.getElementById('liko-landed').style.display = "block";
+                document.getElementById('liko-landed').style.left = "50vw";
+                
+                // Affichage Écran de Victoire (Delay pour l'effet)
+                setTimeout(() => {
+                    victoryScreen.style.display = "flex";
+                    // Petit délai pour l'opacité (transition CSS)
+                    setTimeout(() => {
+                        victoryScreen.style.opacity = "1";
+                        victoryScreen.querySelector('.victory-card').style.transform = "scale(1)";
+                    }, 50);
+                }, 800);
+
+            } else {
+                // Erreur
+                liko.style.opacity = 1;
+                const arrow = document.getElementById('arrow-l');
+                arrow.style.display = "flex"; setTimeout(() => arrow.style.display = "none", 2000);
+            }
+        }
+
+        liko.addEventListener('mousedown', startLiko); liko.addEventListener('touchstart', startLiko);
+        window.addEventListener('mousemove', onLikoMove); window.addEventListener('touchmove', onLikoMove, {passive:false});
+        window.addEventListener('mouseup', endLiko); window.addEventListener('touchend', endLiko);
+    </script>
+</body>
+</html>
