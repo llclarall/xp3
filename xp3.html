@@ -2,356 +2,353 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XP3 Timeline - Wall Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>XP3 Timeline - Classroom Wall</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.95);
-            --shadow-hard: 0 10px 0 rgba(0,0,0,0.2); /* Ombres dures pour mieux ressortir au projecteur */
-            --text-dark: #2c3e50;
+            --glass: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(255, 255, 255, 0.6);
             --primary: #FFD700;
-            --touch-target: 80px; /* Taille min pour un doigt d'enfant */
+            --text-dark: #2c3e50;
+            
+            /* Couleurs des époques pour la Nav */
+            --c-pre: #2c3e50;
+            --c-ant: #e67e22;
+            --c-moy: #27ae60;
+            --c-mod: #7f8c8d;
         }
 
         body {
-            margin: 0; overflow: hidden; height: 100vh; width: 100vw;
-            font-family: 'Fredoka', sans-serif; /* Police très ronde et lisible de loin */
-            background: #2c3e50;
-            user-select: none; touch-action: none;
+            margin: 0; padding: 0; overflow: hidden; height: 100vh; width: 100vw;
+            font-family: 'Fredoka', sans-serif; background: #222;
+            user-select: none; touch-action: none; display: flex; flex-direction: column;
         }
 
-        /* --- 1. LE MONDE (ARRIÈRE-PLAN GÉANT) --- */
-        #viewport { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; }
-        #world { display: flex; height: 100%; width: 400%; transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); will-change: transform; }
-        
-        /* Couleurs saturées pour contrer la délavure du projecteur */
-        .slide { flex: 1; height: 100%; position: relative; overflow: hidden; border-right: 2px solid rgba(255,255,255,0.1); }
-        .s1 { background: linear-gradient(to bottom, #303F9F, #7B1FA2); } /* Préhistoire contrastée */
-        .s2 { background: linear-gradient(to bottom, #FBC02D, #F57F17); } /* Antiquité vive */
-        .s3 { background: linear-gradient(to bottom, #0288D1, #689F38); } /* Moyen-Âge */
-        .s4 { background: linear-gradient(to bottom, #CFD8DC, #90A4AE); } /* Moderne */
+        /* --- LE MONDE --- */
+        #game-viewport { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
+        #world-track { display: flex; height: 100%; width: 400%; will-change: transform; transition: transform 0.1s linear; }
+        .era-slide { flex: 1; height: 100%; position: relative; overflow: hidden; }
 
-        /* Props GÉANTS (Doivent être visibles du fond de la classe) */
-        .prop { 
-            position: absolute; bottom: 35%; /* Remonté pour ne pas être caché par les têtes */
-            font-size: 15vh; 
-            filter: drop-shadow(0 10px 0 rgba(0,0,0,0.3));
-            transition: transform 0.2s;
-        }
-        
-        /* Sol rehaussé */
-        .ground { 
-            position: absolute; bottom: 0; width: 100%; height: 30%; 
-            background: rgba(255,255,255,0.1); 
-            border-top: 4px solid rgba(255,255,255,0.5);
-        }
-        
-        /* Dates XXL */
-        .big-date {
-            position: absolute; top: -30px; left: 40px;
-            font-size: 4vh; color: white; background: #333;
-            padding: 10px 30px; border-radius: 20px;
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.3);
-        }
+        /* DÉCORS */
+        .slide-1 { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
+        .mountain { position: absolute; bottom: 100px; left: 0; width: 100%; height: 50%; background: #141E30; clip-path: polygon(0% 100%, 15% 30%, 30% 80%, 45% 40%, 60% 90%, 75% 20%, 90% 60%, 100% 100%); opacity: 0.8; z-index: 1; }
+        .bg-stars { position: absolute; top:0; left:0; width:100%; height:80%; background-image: radial-gradient(white 2px, transparent 2px); background-size: 60px 60px; opacity: 0.6; animation: twinkle 4s infinite; }
 
-        /* --- 2. INTERFACE DE COMMANDE (EN BAS) --- */
-        /* Tout est regroupé en bas pour l'accessibilité des enfants */
-        .control-deck {
-            position: absolute; bottom: 20px; left: 0; width: 100%;
-            height: auto;
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            z-index: 100; pointer-events: none;
+        .slide-2 { background: linear-gradient(to bottom, #FF8008, #FFC837); }
+        .dunes { position: absolute; bottom: 100px; left: 0; width: 120%; height: 40%; background: #e67e22; border-radius: 100% 100% 0 0; transform: translateX(-10%); z-index: 1; }
+        .sun { position: absolute; top: 15%; right: 20%; width: 15vh; height: 15vh; background: #FFF; border-radius: 50%; box-shadow: 0 0 60px #FFD54F; animation: rotateSun 30s linear infinite; }
+
+        .slide-3 { background: linear-gradient(to bottom, #2980B9, #6DD5FA); }
+        .hills { position: absolute; bottom: 100px; left: -10%; width: 120%; height: 45%; background: #27ae60; border-radius: 50% 50% 0 0; z-index: 1; }
+
+        .slide-4 { background: linear-gradient(to bottom, #bdc3c7, #2c3e50); }
+        .city { position: absolute; bottom: 100px; left: 0; width: 100%; height: 35%; background: linear-gradient(#34495e, #34495e) 5% 100% / 8% 60% no-repeat, linear-gradient(#2c3e50, #2c3e50) 20% 100% / 10% 80% no-repeat, linear-gradient(#34495e, #34495e) 40% 100% / 12% 50% no-repeat, linear-gradient(#2c3e50, #2c3e50) 80% 100% / 10% 70% no-repeat; z-index: 1; opacity: 0.8; }
+
+        /* PROPS */
+        .prop { position: absolute; bottom: 200px; font-size: 16vh; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); transition: transform 0.3s; z-index: 10; }
+        .fire-anim { animation: flicker 0.5s infinite alternate; transform-origin: center bottom; }
+
+        /* SOL & DATES */
+        .ground { position: absolute; bottom: 120px; width: 100%; height: 80px; border-bottom: 2px solid rgba(255,255,255,0.3); z-index: 20; }
+        .timeline-markers { position: absolute; bottom: -10px; left: 0; width: 100%; height: 100%; }
+        .marker-main { position: absolute; bottom: 20px; background: #2D3436; color: white; padding: 10px 25px; border-radius: 15px; font-size: 2.5vh; font-weight: 900; border: 2px solid rgba(255,255,255,0.5); }
+        .marker-sub { position: absolute; bottom: 0; height: 30px; border-left: 3px solid rgba(255,255,255,0.5); display: flex; flex-direction: column; align-items: center; }
+        .marker-sub span { margin-top: -25px; background: rgba(255,255,255,0.9); color: #333; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 1.5vh; white-space: nowrap; }
+
+        .era-watermark { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); font-size: 10vw; font-weight: 900; color: rgba(255,255,255,0.1); text-transform: uppercase; letter-spacing: 20px; pointer-events: none; width: 100%; text-align: center; }
+
+        /* --- UI HAUTE (MISSION & PERSONNAGE) --- */
+        .top-hud {
+            position: absolute; top: 20px; left: 20px; right: 20px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            z-index: 100;
         }
 
-        /* Barre de Nav (Style Arcade) */
-        .nav-bar {
-            pointer-events: auto;
-            width: 90%; height: 80px;
-            background: white; border-radius: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            display: flex; padding: 10px; margin-bottom: 20px;
-            border: 4px solid #333;
+        .mission-bubble {
+            background: var(--glass); backdrop-filter: blur(12px);
+            border: 2px solid white; border-radius: 20px;
+            padding: 15px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; flex-direction: column;
         }
-        
-        .track { flex: 1; background: #eee; border-radius: 30px; position: relative; display: flex; overflow: hidden; }
-        .zone-col { flex: 1; height: 100%; border-right: 2px solid white; opacity: 0.6; transition: 0.2s; }
-        .zone-col:active { opacity: 1; background: white; }
+        .m-title { font-size: 14px; text-transform: uppercase; color: #666; font-weight: bold; margin-bottom: 5px; }
+        .m-content { font-size: 24px; color: var(--text-dark); font-weight: 800; }
 
-        .handle {
-            position: absolute; left: 0; top: 0; height: 100%; width: 25%;
-            background: transparent; border: 6px solid #333; border-radius: 30px;
-            box-sizing: border-box; box-shadow: 0 0 0 2000px rgba(255,255,255,0.6);
-            display: flex; justify-content: center; align-items: center;
+        .char-dock {
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);
+            padding: 10px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.5);
         }
-        .grip-icon { font-size: 30px; color: #333; }
-
-        /* MISSION DOCK (Flottant au-dessus de la nav, accessible) */
-        .mission-dock {
-            pointer-events: auto;
-            background: var(--glass);
-            padding: 15px 40px; border-radius: 30px;
-            border: 4px solid #333;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            display: flex; align-items: center; gap: 30px;
-            margin-bottom: 20px; /* Espace avec la nav */
-            transform: translateY(0); transition: transform 0.3s;
-        }
-        
-        .mission-text {
-            font-size: 24px; font-weight: 700; color: #333;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        /* LIKO (Le Token à Drag) - Version XXL */
         .liko-token {
-            width: 100px; height: 100px; /* Très gros pour les mains */
-            background: var(--primary);
-            border-radius: 50%; border: 6px solid white;
+            width: 100px; height: 100px; background: var(--primary);
+            border: 5px solid white; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 60px;
-            cursor: grab;
-            box-shadow: 0 10px 10px rgba(0,0,0,0.2);
-            animation: bounce 2s infinite;
+            font-size: 60px; cursor: grab;
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+            animation: bounce 3s infinite;
         }
-        .liko-token:active { transform: scale(1.2); cursor: grabbing; animation: none; }
+        .liko-token:active { animation: none; transform: scale(0.9); cursor: grabbing; }
 
-        /* --- 3. UI PASSIVE (EN HAUT - HORS DE PORTÉE) --- */
-        .top-display {
-            position: absolute; top: 30px; width: 100%; text-align: center;
-            pointer-events: none; z-index: 50;
-        }
-        .era-title {
-            font-size: 8vh; font-weight: 900; color: rgba(255,255,255,0.3);
-            text-transform: uppercase; letter-spacing: 10px;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+        /* --- UI BASSE (NAVIGATION COLORÉE) --- */
+        .bottom-hud {
+            position: absolute; bottom: 30px; left: 0; width: 100%;
+            display: flex; justify-content: center; pointer-events: none; z-index: 100;
         }
 
-        /* --- 4. ZONES DE NAVIGATION LATÉRALES (TAP ZONES) --- */
-        /* Permet aux enfants sur les côtés de faire défiler sans toucher la barre centrale */
-        .side-tap {
-            position: absolute; top: 0; bottom: 150px; width: 100px;
-            z-index: 90; display: flex; align-items: center; justify-content: center;
-            font-size: 60px; color: white; opacity: 0; transition: opacity 0.3s;
-            background: linear-gradient(to right, rgba(0,0,0,0.3), transparent);
+        .nav-bar {
+            pointer-events: auto; width: 85%; max-width: 800px; height: 80px;
+            background: white; border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            padding: 8px; display: flex; align-items: center;
         }
-        .side-tap:active { opacity: 1; }
-        .tap-left { left: 0; }
-        .tap-right { right: 0; background: linear-gradient(to left, rgba(0,0,0,0.3), transparent); }
 
-        /* --- FEEDBACK --- */
-        #ghost { position: fixed; font-size: 100px; pointer-events: none; z-index: 9999; opacity: 0; }
+        .nav-track {
+            flex: 1; height: 100%; border-radius: 32px;
+            position: relative; overflow: hidden; display: flex;
+        }
+
+        /* Segments colorés */
+        .nav-seg { flex: 1; height: 100%; opacity: 0.8; transition: opacity 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); }
+        .nav-seg:hover { opacity: 1; }
+        .seg-1 { background: var(--c-pre); }
+        .seg-2 { background: var(--c-ant); }
+        .seg-3 { background: var(--c-moy); }
+        .seg-4 { background: var(--c-mod); }
+
+        /* Curseur */
+        .nav-knob {
+            position: absolute; left: 0; top: 0; width: 25%; height: 100%;
+            border: 5px solid white; border-radius: 32px; box-sizing: border-box;
+            box-shadow: 0 0 0 2000px rgba(0,0,0,0.6); /* Assombrit le reste */
+            cursor: ew-resize; display: flex; justify-content: center; align-items: center;
+        }
+        .grip-lines { color: white; font-weight: 900; font-size: 24px; letter-spacing: -2px; }
+
+        /* --- FEEDBACK (FLÈCHES) --- */
+        #ghost { position: fixed; font-size: 90px; opacity: 0; pointer-events: none; z-index: 9999; }
         
-        .victory-splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 2000;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
+        .arrow-hint {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: 100px; height: 100px; background: #FF4757; color: white;
+            border-radius: 50%; font-size: 50px; display: none;
+            justify-content: center; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 5px solid white;
+            animation: pulseArrow 1s infinite; z-index: 500;
         }
-        .victory-content { 
-            text-align: center; color: white; transform: scale(0.5); 
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        #arrow-left { left: 50px; }
+        #arrow-right { right: 50px; }
+
+        #liko-landed { position: absolute; bottom: 180px; left: 0; font-size: 18vh; display: none; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.4)); animation: bounceDrop 0.8s ease-out; }
+
+        #victory {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 2000;
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            color: white; backdrop-filter: blur(8px); animation: fadeIn 0.5s;
         }
 
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes pulseArrow { 0% { transform: translateY(-50%) scale(1); } 50% { transform: translateY(-50%) scale(1.1); } 100% { transform: translateY(-50%) scale(1); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes rotateSun { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes flicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0.8; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes bounceDrop { 0% { transform: translateY(-50px); opacity:0; } 60% { transform: translateY(10px); opacity:1; } 100% { transform: translateY(0); } }
 
     </style>
 </head>
 <body>
 
-    <div class="side-tap tap-left" onclick="stepMove(-1)">❮</div>
-    <div class="side-tap tap-right" onclick="stepMove(1)">❯</div>
-
-    <div id="viewport">
-        <div id="world">
+    <div id="game-viewport">
+        <div id="world-track">
             
-            <div class="slide s1">
-                <div class="top-display"><div class="era-title">Préhistoire</div></div>
-                <div class="prop" style="left: 10%">🌋</div>
-                <div class="prop fire-target" style="left: 50%">🔥</div> <div class="ground">
-                    <div class="big-date">-400 000</div>
+            <div class="era-slide slide-1">
+                <div class="era-watermark">PRÉHISTOIRE</div>
+                <div class="bg-stars"></div>
+                <div class="mountain"></div>
+                <div class="prop" style="left: 10%;">🌋</div>
+                <div class="prop fire-anim" style="left: 45%;">🔥</div> <div class="ground">
+                    <div class="timeline-markers">
+                        <div class="marker-main" style="left: 20px;">-400 000</div>
+                        <div class="marker-sub" style="left: 40%;"><span>-30 000 (Art)</span></div>
+                        <div class="marker-sub" style="left: 70%;"><span>-10 000 (Agri)</span></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="slide s2">
-                <div class="top-display"><div class="era-title">Antiquité</div></div>
-                <div class="prop" style="left: 30%">🐪</div>
-                <div class="prop" style="left: 70%">🏛️</div>
-                <div class="ground"><div class="big-date">-3 000</div></div>
+            <div class="era-slide slide-2">
+                <div class="era-watermark">ANTIQUITÉ</div>
+                <div class="sun"></div>
+                <div class="dunes"></div>
+                <div class="prop" style="left: 25%;">🐪</div>
+                <div class="prop" style="left: 65%;">🏛️</div>
+                <div class="ground">
+                    <div class="timeline-markers">
+                        <div class="marker-main" style="left: 20px;">-3 000</div>
+                        <div class="marker-sub" style="left: 40%;"><span>-753 (Rome)</span></div>
+                        <div class="marker-sub" style="left: 80%;"><span>-52 (Alésia)</span></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="slide s3">
-                <div class="top-display"><div class="era-title">Moyen-Âge</div></div>
-                <div class="prop" style="left: 40%">🏰</div>
-                <div class="ground"><div class="big-date">476</div></div>
+            <div class="era-slide slide-3">
+                <div class="era-watermark">MOYEN-ÂGE</div>
+                <div class="hills"></div>
+                <div class="prop" style="left: 40%;">🏰</div>
+                <div class="prop" style="left: 80%;">🛡️</div>
+                <div class="ground">
+                    <div class="timeline-markers">
+                        <div class="marker-main" style="left: 20px;">476</div>
+                        <div class="marker-sub" style="left: 50%;"><span>800 (Sacre)</span></div>
+                        <div class="marker-sub" style="left: 90%;"><span>1492</span></div>
+                    </div>
+                </div>
             </div>
 
-            <div class="slide s4">
-                <div class="top-display"><div class="era-title">Moderne</div></div>
-                <div class="prop" style="left: 20%">🏭</div>
-                <div class="prop" style="left: 80%">🚀</div>
-                <div class="ground"><div class="big-date">1789</div></div>
+            <div class="era-slide slide-4">
+                <div class="era-watermark">MODERNE</div>
+                <div class="city"></div>
+                <div class="prop" style="left: 25%;">🏭</div>
+                <div class="prop" style="left: 80%;">🚀</div>
+                <div class="ground">
+                    <div class="timeline-markers">
+                        <div class="marker-main" style="left: 20px;">1789</div>
+                        <div class="marker-sub" style="left: 30%;"><span>1889</span></div>
+                        <div class="marker-sub" style="left: 60%;"><span>1945</span></div>
+                        <div class="marker-sub" style="left: 85%;"><span>2024</span></div>
+                    </div>
+                </div>
             </div>
-
         </div>
         
-        <div id="liko-landed" style="position: absolute; bottom: 35%; left: 0; font-size: 15vh; display: none; filter: drop-shadow(0 10px 0 rgba(0,0,0,0.4)); animation: pop 0.5s;">👦</div>
+        <div id="liko-landed">👦</div>
     </div>
 
-    <div class="control-deck">
-        
-        <div class="mission-dock" id="mission-ui">
-            <div class="liko-token" id="liko-source">👦</div>
-            <div class="mission-text">Trouve le feu !</div>
+    <div class="top-hud">
+        <div class="mission-bubble">
+            <span class="m-title">Mission</span>
+            <span class="m-content">Trouve le FEU 🔥</span>
         </div>
 
-        <div class="nav-bar">
-            <div class="track" id="nav-track">
-                <div class="zone-col" style="background:#303F9F" onclick="jumpTo(0)"></div>
-                <div class="zone-col" style="background:#FBC02D" onclick="jumpTo(33)"></div>
-                <div class="zone-col" style="background:#689F38" onclick="jumpTo(66)"></div>
-                <div class="zone-col" style="background:#90A4AE" onclick="jumpTo(100)"></div>
+        <div class="char-dock">
+            <div class="liko-token" id="liko">👦</div>
+        </div>
+    </div>
+
+    <div class="bottom-hud">
+        <div class="nav-bar" id="nav-container">
+            <div class="nav-track">
+                <div class="nav-seg seg-1" onclick="jump(0)"></div>
+                <div class="nav-seg seg-2" onclick="jump(33.3)"></div>
+                <div class="nav-seg seg-3" onclick="jump(66.6)"></div>
+                <div class="nav-seg seg-4" onclick="jump(100)"></div>
                 
-                <div class="handle" id="handle">
-                    <div class="grip-icon">↔</div>
+                <div class="nav-knob" id="knob">
+                    <span class="grip-lines">|||</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="victory-splash" id="victory">
-        <div class="victory-content">
-            <div style="font-size: 150px;">🎉🔥</div>
-            <h1 style="font-size: 80px; margin: 20px 0;">BRAVO !</h1>
-            <p style="font-size: 40px;">Tu as trouvé l'époque du feu.</p>
-            <button onclick="location.reload()" style="font-size: 40px; padding: 20px 60px; border-radius: 50px; border:none; margin-top:40px; background:#FFD700; color:#333; box-shadow: 0 10px 0 #F57F17;">Rejouer</button>
-        </div>
-    </div>
-
+    <div id="arrow-left" class="arrow-hint">⬅️</div>
+    <div id="arrow-right" class="arrow-hint">➡️</div>
     <div id="ghost">👦</div>
 
+    <div id="victory">
+        <div style="font-size: 120px;">🔥👦</div>
+        <h1 style="font-size: 80px; margin: 20px;">BRAVO !</h1>
+        <button onclick="location.reload()" style="font-size: 30px; padding: 20px 60px; border-radius: 50px; background: #FFD700; border: none; font-weight: bold; cursor: pointer;">Rejouer</button>
+    </div>
+
     <script>
-        const world = document.getElementById('world');
-        const handle = document.getElementById('handle');
-        const track = document.getElementById('nav-track');
-        const liko = document.getElementById('liko-source');
+        const world = document.getElementById('world-track');
+        const knob = document.getElementById('knob');
+        const navContainer = document.getElementById('nav-container');
+        const liko = document.getElementById('liko');
         const ghost = document.getElementById('ghost');
-        const missionUI = document.getElementById('mission-ui');
-        
+        const arrowL = document.getElementById('arrow-left');
+        const arrowR = document.getElementById('arrow-right');
+
         let scrollPct = 0;
-        let isDragging = false;
-        let isLikoDrag = false;
+        let isNav = false;
+        let isLiko = false;
 
-        // --- NAVIGATION ROBUSTE ---
-        function updateView() {
-            // Clamp 0-100
+        function update() {
             scrollPct = Math.max(0, Math.min(100, scrollPct));
-            
-            // Handle bouge de 0% à 75% (car width 25%)
-            const visualHandle = scrollPct * 0.75; 
-            handle.style.left = visualHandle + '%';
-            
-            // World bouge de 0 à -300vw (pour 4 slides)
-            // 100% scroll = fin du slide 4
-            // Slide 1 = 0-25%, Slide 2 = 25-50%...
-            // Total translation max = 300vw
-            const worldMove = -(scrollPct / 100) * 300;
-            world.style.transform = `translateX(${worldMove}vw)`;
+            knob.style.left = (scrollPct * 0.75) + '%';
+            world.style.transform = `translateX(${-(scrollPct / 100) * 300}vw)`;
         }
 
-        // Tap sur les zones colorées
-        window.jumpTo = (pct) => {
-            scrollPct = pct;
-            updateView();
-        }
+        window.jump = (val) => { scrollPct = val; update(); }
 
-        // Tap latéraux
-        window.stepMove = (dir) => {
-            scrollPct += (dir * 25); // Saute d'une époque (approx)
-            updateView();
-        }
-
-        // Drag du Handle
-        function onNavDrag(e) {
-            if(!isDragging) return;
+        function navMove(e) {
+            if(!isNav) return;
             e.preventDefault();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const rect = track.getBoundingClientRect();
-            
-            // Calcul position relative
-            let x = clientX - rect.left - (rect.width * 0.125); // Centre
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const rect = navContainer.getBoundingClientRect();
+            let x = cx - rect.left - (rect.width * 0.125);
             let pct = (x / rect.width) * 100;
-            
-            // Scale pour couvrir 0-100 sur la zone navigable
-            scrollPct = (pct / 0.75); 
-            updateView();
+            scrollPct = pct / 0.75;
+            update();
         }
 
-        handle.addEventListener('mousedown', () => isDragging = true);
-        handle.addEventListener('touchstart', () => isDragging = true);
-        window.addEventListener('mouseup', () => isDragging = false);
-        window.addEventListener('touchend', () => isDragging = false);
-        window.addEventListener('mousemove', onNavDrag);
-        window.addEventListener('touchmove', onNavDrag, {passive: false});
+        knob.addEventListener('mousedown', () => isNav=true);
+        knob.addEventListener('touchstart', () => isNav=true);
+        window.addEventListener('mouseup', () => isNav=false);
+        window.addEventListener('touchend', () => isNav=false);
+        window.addEventListener('mousemove', navMove);
+        window.addEventListener('touchmove', navMove, {passive:false});
 
-        // --- DRAG LIKO (GÉANT) ---
-        function onLikoMove(e) {
-            if(!isLikoDrag) return;
+        function likoMove(e) {
+            if(!isLiko) return;
             e.preventDefault();
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
-            // Ghost suit le doigt
-            ghost.style.left = (clientX - 50) + 'px';
-            ghost.style.top = (clientY - 50) + 'px';
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            ghost.style.left = (cx - 50) + 'px';
+            ghost.style.top = (cy - 50) + 'px';
         }
 
-        function startLiko(e) {
-            e.preventDefault();
-            isLikoDrag = true;
+        function likoStart(e) {
+            isLiko = true;
             ghost.style.opacity = 1;
             liko.style.opacity = 0;
-            onLikoMove(e);
+            likoMove(e);
+            arrowL.style.display = 'none';
+            arrowR.style.display = 'none';
         }
 
-        function endLiko(e) {
-            if(!isLikoDrag) return;
-            isLikoDrag = false;
+        function likoEnd() {
+            if(!isLiko) return;
+            isLiko = false;
             ghost.style.opacity = 0;
-            
-            // Victoire : Si on est dans le premier quart (Préhistoire)
-            // ScrollPct < 25 (environ)
+
+            // Logique de Victoire (Préhistoire < 20%)
             if(scrollPct < 20) {
-                // VICTOIRE
-                missionUI.style.transform = "translateY(200%)"; // Cache l'UI vers le bas
                 const landed = document.getElementById('liko-landed');
                 landed.style.display = 'block';
-                landed.style.left = '50vw'; // Au milieu de l'écran visible ? 
-                // Pour simplifier sur mur, on le met au centre absolu du slide 1
-                // Mais comme le world a bougé, il faut ajuster.
-                // Ici pour la démo, on affiche l'écran de victoire direct.
-                
-                setTimeout(() => {
-                    const vic = document.getElementById('victory');
-                    vic.style.display = 'flex';
-                    setTimeout(() => vic.querySelector('.victory-content').style.transform = "scale(1)", 50);
-                }, 500);
-
+                landed.style.left = '50vw'; 
+                setTimeout(() => document.getElementById('victory').style.display = 'flex', 800);
             } else {
-                // RETOUR
+                // Erreur : Afficher la flèche
                 liko.style.opacity = 1;
-                // Feedback visuel "Non"
-                world.style.transform += "translateX(10px)";
-                setTimeout(() => updateView(), 100);
+                
+                if (scrollPct > 20) {
+                    // Si on est trop à droite (futur), montrer flèche gauche
+                    arrowL.style.display = 'flex';
+                    setTimeout(() => arrowL.style.display = 'none', 3000);
+                } else {
+                    // Cas rare : trop à gauche (si cible ailleurs), ici juste pour la logique
+                    arrowR.style.display = 'flex';
+                    setTimeout(() => arrowR.style.display = 'none', 3000);
+                }
             }
         }
 
-        liko.addEventListener('mousedown', startLiko);
-        liko.addEventListener('touchstart', startLiko);
-        window.addEventListener('mousemove', onLikoMove);
-        window.addEventListener('touchmove', onLikoMove, {passive:false});
-        window.addEventListener('mouseup', endLiko);
-        window.addEventListener('touchend', endLiko);
+        liko.addEventListener('mousedown', likoStart);
+        liko.addEventListener('touchstart', likoStart);
+        window.addEventListener('mousemove', likoMove);
+        window.addEventListener('touchmove', likoMove, {passive:false});
+        window.addEventListener('mouseup', likoEnd);
+        window.addEventListener('touchend', likoEnd);
 
     </script>
 </body>
