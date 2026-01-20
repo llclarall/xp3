@@ -3,20 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>XP3 Timeline - Classroom Wall</title>
+    <title>XP3 - Mission Cro-Magnon</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --glass: rgba(255, 255, 255, 0.9);
-            --glass-border: rgba(255, 255, 255, 0.6);
             --primary: #FFD700;
             --text-dark: #2c3e50;
-            
-            /* Couleurs des époques pour la Nav */
-            --c-pre: #2c3e50;
-            --c-ant: #e67e22;
-            --c-moy: #27ae60;
-            --c-mod: #7f8c8d;
+            --c-pre: #2c3e50; --c-ant: #e67e22; --c-moy: #27ae60; --c-mod: #7f8c8d;
         }
 
         body {
@@ -25,14 +19,16 @@
             user-select: none; touch-action: none; display: flex; flex-direction: column;
         }
 
-        /* --- LE MONDE --- */
+        /* --- MONDE & DÉCORS --- */
         #game-viewport { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; overflow: hidden; }
         #world-track { display: flex; height: 100%; width: 400%; will-change: transform; transition: transform 0.1s linear; }
         .era-slide { flex: 1; height: 100%; position: relative; overflow: hidden; }
 
-        /* DÉCORS */
+        /* ATMOSPHÈRES & DÉCORS CSS */
         .slide-1 { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
         .mountain { position: absolute; bottom: 100px; left: 0; width: 100%; height: 50%; background: #141E30; clip-path: polygon(0% 100%, 15% 30%, 30% 80%, 45% 40%, 60% 90%, 75% 20%, 90% 60%, 100% 100%); opacity: 0.8; z-index: 1; }
+        /* La Grotte de Cro-Magnon */
+        .cave { position: absolute; bottom: 100px; left: 10%; width: 250px; height: 180px; background: #080808; border-radius: 50% 50% 0 0; z-index: 2; box-shadow: inset 0 20px 40px rgba(0,0,0,0.8); border: 2px solid rgba(255,255,255,0.1); }
         .bg-stars { position: absolute; top:0; left:0; width:100%; height:80%; background-image: radial-gradient(white 2px, transparent 2px); background-size: 60px 60px; opacity: 0.6; animation: twinkle 4s infinite; }
 
         .slide-2 { background: linear-gradient(to bottom, #FF8008, #FFC837); }
@@ -45,9 +41,33 @@
         .slide-4 { background: linear-gradient(to bottom, #bdc3c7, #2c3e50); }
         .city { position: absolute; bottom: 100px; left: 0; width: 100%; height: 35%; background: linear-gradient(#34495e, #34495e) 5% 100% / 8% 60% no-repeat, linear-gradient(#2c3e50, #2c3e50) 20% 100% / 10% 80% no-repeat, linear-gradient(#34495e, #34495e) 40% 100% / 12% 50% no-repeat, linear-gradient(#2c3e50, #2c3e50) 80% 100% / 10% 70% no-repeat; z-index: 1; opacity: 0.8; }
 
-        /* PROPS */
-        .prop { position: absolute; bottom: 200px; font-size: 16vh; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); transition: transform 0.3s; z-index: 10; }
+        /* --- PROPS & HOTSPOTS --- */
+        .prop-group { position: absolute; bottom: 200px; z-index: 10; transition: transform 0.3s; }
+        .prop-emoji { font-size: 16vh; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); }
         .fire-anim { animation: flicker 0.5s infinite alternate; transform-origin: center bottom; }
+
+        /* Bouton Hotspot (?) */
+        .hotspot-btn {
+            position: absolute; top: -10px; right: -10px;
+            width: 40px; height: 40px; background: rgba(255,255,255,0.9);
+            border-radius: 50%; border: 3px solid var(--primary);
+            color: var(--text-dark); font-weight: bold; font-size: 20px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: pulseBtn 2s infinite;
+        }
+        .hotspot-btn:active { transform: scale(0.9); }
+
+        /* Bulle Info */
+        .info-bubble {
+            position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%) scale(0);
+            width: 220px; background: white; padding: 15px; border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: center;
+            font-size: 16px; color: #333; pointer-events: none; opacity: 0;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100;
+        }
+        .info-bubble.active { transform: translateX(-50%) scale(1); opacity: 1; pointer-events: auto; }
+        .info-bubble::after { content:''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-width: 10px 10px 0; border-style: solid; border-color: white transparent transparent; }
 
         /* SOL & DATES */
         .ground { position: absolute; bottom: 120px; width: 100%; height: 80px; border-bottom: 2px solid rgba(255,255,255,0.3); z-index: 20; }
@@ -56,14 +76,16 @@
         .marker-sub { position: absolute; bottom: 0; height: 30px; border-left: 3px solid rgba(255,255,255,0.5); display: flex; flex-direction: column; align-items: center; }
         .marker-sub span { margin-top: -25px; background: rgba(255,255,255,0.9); color: #333; padding: 2px 8px; border-radius: 5px; font-weight: bold; font-size: 1.5vh; white-space: nowrap; }
 
-        .era-watermark { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); font-size: 10vw; font-weight: 900; color: rgba(255,255,255,0.1); text-transform: uppercase; letter-spacing: 20px; pointer-events: none; width: 100%; text-align: center; }
+        .era-watermark { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); font-size: 10vw; font-weight: 900; color: rgba(255, 255, 255, 0.39); text-transform: uppercase; letter-spacing: 20px; pointer-events: none; width: 100%; text-align: center; }
 
-        /* --- UI HAUTE (MISSION & PERSONNAGE) --- */
+        /* --- UI HAUTE (MISSION & AUDIO) --- */
         .top-hud {
             position: absolute; top: 20px; left: 20px; right: 20px;
             display: flex; justify-content: space-between; align-items: flex-start;
             z-index: 100;
         }
+
+        .mission-group { display: flex; gap: 20px; align-items: flex-start; }
 
         .mission-bubble {
             background: var(--glass); backdrop-filter: blur(12px);
@@ -74,10 +96,27 @@
         .m-title { font-size: 14px; text-transform: uppercase; color: #666; font-weight: bold; margin-bottom: 5px; }
         .m-content { font-size: 24px; color: var(--text-dark); font-weight: 800; }
 
+        /* Audio Player UI */
+        .audio-player {
+            background: rgba(0,0,0,0.6); color: white; padding: 10px 20px;
+            border-radius: 30px; font-size: 14px; display: flex; align-items: center; gap: 15px;
+            backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.3);
+            margin-top: 10px; cursor: pointer; transition: transform 0.1s;
+        }
+        .audio-player:active { transform: scale(0.95); }
+        .eq-bars { display: flex; gap: 4px; height: 15px; align-items: flex-end; opacity: 0.3; }
+        .bar { width: 4px; background: #4CAF50; height: 5px; transition: height 0.1s; }
+        
+        .eq-active .bar { animation: eq 0.5s infinite alternate; }
+        .eq-active .bar:nth-child(2) { animation-delay: 0.1s; } 
+        .eq-active .bar:nth-child(3) { animation-delay: 0.2s; }
+        .eq-active { opacity: 1; }
+
         .char-dock {
             background: rgba(255,255,255,0.2); backdrop-filter: blur(5px);
             padding: 10px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.5);
         }
+        /* Token Cro-Magnon */
         .liko-token {
             width: 100px; height: 100px; background: var(--primary);
             border: 5px solid white; border-radius: 50%;
@@ -88,71 +127,62 @@
         }
         .liko-token:active { animation: none; transform: scale(0.9); cursor: grabbing; }
 
-        /* --- UI BASSE (NAVIGATION COLORÉE) --- */
+        /* --- UI BASSE (NAVIGATION) --- */
         .bottom-hud {
             position: absolute; bottom: 30px; left: 0; width: 100%;
             display: flex; justify-content: center; pointer-events: none; z-index: 100;
         }
-
         .nav-bar {
             pointer-events: auto; width: 85%; max-width: 800px; height: 80px;
             background: white; border-radius: 40px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             padding: 8px; display: flex; align-items: center;
         }
-
-        .nav-track {
-            flex: 1; height: 100%; border-radius: 32px;
-            position: relative; overflow: hidden; display: flex;
-        }
-
-        /* Segments colorés */
-        .nav-seg { flex: 1; height: 100%; opacity: 0.8; transition: opacity 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); }
-        .nav-seg:hover { opacity: 1; }
-        .seg-1 { background: var(--c-pre); }
-        .seg-2 { background: var(--c-ant); }
-        .seg-3 { background: var(--c-moy); }
-        .seg-4 { background: var(--c-mod); }
-
-        /* Curseur */
-        .nav-knob {
-            position: absolute; left: 0; top: 0; width: 25%; height: 100%;
-            border: 5px solid white; border-radius: 32px; box-sizing: border-box;
-            box-shadow: 0 0 0 2000px rgba(0,0,0,0.6); /* Assombrit le reste */
-            cursor: ew-resize; display: flex; justify-content: center; align-items: center;
-        }
+        .nav-track { flex: 1; height: 100%; border-radius: 32px; position: relative; overflow: hidden; display: flex; }
+        .nav-seg { flex: 1; height: 100%; opacity: 0.8; transition: opacity 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.6); font-weight: bold; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-seg:hover { opacity: 1; color: white; }
+        .seg-1 { background: var(--c-pre); } .seg-2 { background: var(--c-ant); } .seg-3 { background: var(--c-moy); } .seg-4 { background: var(--c-mod); }
+        .nav-knob { position: absolute; left: 0; top: 0; width: 25%; height: 100%; border: 6px solid white; border-radius: 32px; box-sizing: border-box; box-shadow: 0 0 0 2000px rgba(0,0,0,0.6); cursor: ew-resize; display: flex; justify-content: center; align-items: center; }
         .grip-lines { color: white; font-weight: 900; font-size: 24px; letter-spacing: -2px; }
 
-        /* --- FEEDBACK (FLÈCHES) --- */
+        /* --- OVERLAYS & POLAROID --- */
         #ghost { position: fixed; font-size: 90px; opacity: 0; pointer-events: none; z-index: 9999; }
         
-        .arrow-hint {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            width: 100px; height: 100px; background: #FF4757; color: white;
-            border-radius: 50%; font-size: 50px; display: none;
-            justify-content: center; align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 5px solid white;
-            animation: pulseArrow 1s infinite; z-index: 500;
-        }
-        #arrow-left { left: 50px; }
-        #arrow-right { right: 50px; }
+        .arrow-hint { position: absolute; top: 50%; transform: translateY(-50%); width: 100px; height: 100px; background: #FF4757; color: white; border-radius: 50%; font-size: 50px; display: none; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 5px solid white; animation: pulseArrow 1s infinite; z-index: 500; }
+        #arrow-left { left: 50px; } #arrow-right { right: 50px; }
 
-        #liko-landed { position: absolute; bottom: 180px; left: 0; font-size: 18vh; display: none; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.4)); animation: bounceDrop 0.8s ease-out; }
+        #liko-landed { position: absolute; bottom: 180px; left: 15%; font-size: 18vh; display: none; filter: drop-shadow(0 10px 5px rgba(0,0,0,0.4)); animation: bounceDrop 0.8s ease-out; z-index: 5; }
 
-        #victory {
+        .polaroid-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 2000;
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            color: white; backdrop-filter: blur(8px); animation: fadeIn 0.5s;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.5s;
         }
+        .polaroid {
+            background: white; padding: 20px 20px 80px 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5); transform: rotate(-3deg) scale(0.8);
+            text-align: center; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .polaroid-img {
+            width: 400px; height: 300px; background: #333; overflow: hidden; position: relative;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .polaroid-caption {
+            position: absolute; bottom: 20px; width: 100%; left: 0;
+            font-family: 'Courier New', monospace; font-weight: bold; font-size: 24px; color: #333;
+        }
+        .tape { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 150px; height: 40px; background: rgba(255,255,255,0.6); box-shadow: 0 2px 5px rgba(0,0,0,0.1); transform: rotate(2deg); }
 
+        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes pulseArrow { 0% { transform: translateY(-50%) scale(1); } 50% { transform: translateY(-50%) scale(1.1); } 100% { transform: translateY(-50%) scale(1); } }
         @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         @keyframes rotateSun { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
         @keyframes flicker { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.1); opacity: 0.8; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes bounceDrop { 0% { transform: translateY(-50px); opacity:0; } 60% { transform: translateY(10px); opacity:1; } 100% { transform: translateY(0); } }
+        @keyframes eq { 0% { height: 5px; } 100% { height: 15px; } }
 
     </style>
 </head>
@@ -165,12 +195,19 @@
                 <div class="era-watermark">PRÉHISTOIRE</div>
                 <div class="bg-stars"></div>
                 <div class="mountain"></div>
-                <div class="prop" style="left: 10%;">🌋</div>
-                <div class="prop fire-anim" style="left: 45%;">🔥</div> <div class="ground">
+                <div class="cave"></div>
+                
+                <div class="prop-group" style="left: 45%;">
+                    <div class="prop-emoji">🔥</div>
+                    <div class="hotspot-btn" onclick="toggleInfo(this)">?</div>
+                    <div class="info-bubble">Le feu servait à cuire, chauffer et éclairer !</div>
+                </div>
+
+                <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">-400 000</div>
-                        <div class="marker-sub" style="left: 40%;"><span>-30 000 (Art)</span></div>
-                        <div class="marker-sub" style="left: 70%;"><span>-10 000 (Agri)</span></div>
+                        <div class="marker-sub" style="left: 40%;"><span>-30 000</span></div>
+                        <div class="marker-sub" style="left: 70%;"><span>-10 000</span></div>
                     </div>
                 </div>
             </div>
@@ -179,13 +216,19 @@
                 <div class="era-watermark">ANTIQUITÉ</div>
                 <div class="sun"></div>
                 <div class="dunes"></div>
-                <div class="prop" style="left: 25%;">🐪</div>
-                <div class="prop" style="left: 65%;">🏛️</div>
+                <div class="prop-group" style="left: 25%;">
+                    <div class="prop-emoji">🐪</div>
+                </div>
+                <div class="prop-group" style="left: 65%;">
+                    <div class="prop-emoji">🏛️</div>
+                    <div class="hotspot-btn" onclick="toggleInfo(this)">?</div>
+                    <div class="info-bubble">Les Romains ont inventé le ciment !</div>
+                </div>
                 <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">-3 000</div>
-                        <div class="marker-sub" style="left: 40%;"><span>-753 (Rome)</span></div>
-                        <div class="marker-sub" style="left: 80%;"><span>-52 (Alésia)</span></div>
+                        <div class="marker-sub" style="left: 40%;"><span>-753</span></div>
+                        <div class="marker-sub" style="left: 80%;"><span>-52</span></div>
                     </div>
                 </div>
             </div>
@@ -193,12 +236,18 @@
             <div class="era-slide slide-3">
                 <div class="era-watermark">MOYEN-ÂGE</div>
                 <div class="hills"></div>
-                <div class="prop" style="left: 40%;">🏰</div>
-                <div class="prop" style="left: 80%;">🛡️</div>
+                <div class="prop-group" style="left: 40%;">
+                    <div class="prop-emoji">🏰</div>
+                    <div class="hotspot-btn" onclick="toggleInfo(this)">?</div>
+                    <div class="info-bubble">Le château protégeait les paysans.</div>
+                </div>
+                <div class="prop-group" style="left: 80%;">
+                    <div class="prop-emoji">🛡️</div>
+                </div>
                 <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">476</div>
-                        <div class="marker-sub" style="left: 50%;"><span>800 (Sacre)</span></div>
+                        <div class="marker-sub" style="left: 50%;"><span>800</span></div>
                         <div class="marker-sub" style="left: 90%;"><span>1492</span></div>
                     </div>
                 </div>
@@ -207,8 +256,14 @@
             <div class="era-slide slide-4">
                 <div class="era-watermark">MODERNE</div>
                 <div class="city"></div>
-                <div class="prop" style="left: 25%;">🏭</div>
-                <div class="prop" style="left: 80%;">🚀</div>
+                <div class="prop-group" style="left: 25%;">
+                    <div class="prop-emoji">🏭</div>
+                    <div class="hotspot-btn" onclick="toggleInfo(this)">?</div>
+                    <div class="info-bubble">L'usine a changé le travail au 19ème siècle.</div>
+                </div>
+                <div class="prop-group" style="left: 80%;">
+                    <div class="prop-emoji">🚀</div>
+                </div>
                 <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">1789</div>
@@ -220,27 +275,35 @@
             </div>
         </div>
         
-        <div id="liko-landed">👦</div>
+        <div id="liko-landed">🧔</div>
     </div>
 
     <div class="top-hud">
-        <div class="mission-bubble">
-            <span class="m-title">Mission</span>
-            <span class="m-content">Trouve le FEU 🔥</span>
+        <div class="mission-group">
+            <div class="mission-bubble">
+                <span class="m-title">Mission</span>
+                <span class="m-content">Place l'Homme de<br>Cro-Magnon</span>
+            </div>
+            
+            <div class="audio-player" onclick="toggleAudio()" title="Cliquer pour activer le son">
+                <span style="font-size:20px">🔊</span>
+                <span>Ambiance : <b id="track-name">Nuit Calme</b></span>
+                <div class="eq-bars" id="eq"><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            </div>
         </div>
 
         <div class="char-dock">
-            <div class="liko-token" id="liko">👦</div>
+            <div class="liko-token" id="liko">🧔</div>
         </div>
     </div>
 
     <div class="bottom-hud">
         <div class="nav-bar" id="nav-container">
             <div class="nav-track">
-                <div class="nav-seg seg-1" onclick="jump(0)"></div>
-                <div class="nav-seg seg-2" onclick="jump(33.3)"></div>
-                <div class="nav-seg seg-3" onclick="jump(66.6)"></div>
-                <div class="nav-seg seg-4" onclick="jump(100)"></div>
+                <div class="nav-seg seg-1" onclick="jump(0)">Préhistoire</div>
+                <div class="nav-seg seg-2" onclick="jump(33.3)">Antiquité</div>
+                <div class="nav-seg seg-3" onclick="jump(66.6)">Moyen-Âge</div>
+                <div class="nav-seg seg-4" onclick="jump(100)">Moderne</div>
                 
                 <div class="nav-knob" id="knob">
                     <span class="grip-lines">|||</span>
@@ -251,12 +314,18 @@
 
     <div id="arrow-left" class="arrow-hint">⬅️</div>
     <div id="arrow-right" class="arrow-hint">➡️</div>
-    <div id="ghost">👦</div>
+    <div id="ghost">🧔</div>
 
-    <div id="victory">
-        <div style="font-size: 120px;">🔥👦</div>
-        <h1 style="font-size: 80px; margin: 20px;">BRAVO !</h1>
-        <button onclick="location.reload()" style="font-size: 30px; padding: 20px 60px; border-radius: 50px; background: #FFD700; border: none; font-weight: bold; cursor: pointer;">Rejouer</button>
+    <div class="polaroid-overlay" id="victory">
+        <div class="polaroid">
+            <div class="tape"></div>
+            <div class="polaroid-img">
+                <div style="font-size: 150px; position:absolute; left:-20px;">⛰️</div>
+                <div style="font-size: 150px; position:absolute; right:0; transform:rotate(10deg);">✌️🧔</div>
+            </div>
+            <div class="polaroid-caption">Souvenir de -400 000 !</div>
+            <button onclick="location.reload()" style="margin-top: 30px; font-size: 20px; padding: 10px 30px; border-radius: 20px; border: 2px solid #333; background: #FFD700; cursor: pointer; font-weight: bold;">Nouvelle Partie</button>
+        </div>
     </div>
 
     <script>
@@ -267,19 +336,109 @@
         const ghost = document.getElementById('ghost');
         const arrowL = document.getElementById('arrow-left');
         const arrowR = document.getElementById('arrow-right');
+        const trackName = document.getElementById('track-name');
+        const victoryScreen = document.getElementById('victory');
+        const eq = document.getElementById('eq');
+
+        let currentZoneIndex = -1; 
+        const ambiences = ['bg-pre', 'bg-ant', 'bg-moy', 'bg-mod'];
 
         let scrollPct = 0;
         let isNav = false;
-        let isLiko = false;
+        let isLikoDrag = false;
+        let audioActive = false;
 
+
+        window.toggleAudio = () => {
+            audioActive = !audioActive;
+            const eq = document.getElementById('eq');
+            
+            if(audioActive) {
+                eq.classList.add('eq-active');
+                // Lancer l'ambiance actuelle immédiatement
+                updateAudioContext(true); 
+            } else {
+                eq.classList.remove('eq-active');
+                // Tout couper
+                ambiences.forEach(id => {
+                    document.getElementById(id).pause();
+                });
+            }
+        }
+
+        function updateAudioContext(forceStart = false) {
+            let newIndex = 0;
+            
+            // Déterminer la zone actuelle
+            if(scrollPct < 25) newIndex = 0; // Préhistoire
+            else if(scrollPct < 50) newIndex = 1; // Antiquité
+            else if(scrollPct < 75) newIndex = 2; // Moyen-Âge
+            else newIndex = 3; // Moderne
+
+            // Mise à jour du texte (comme avant)
+            const labels = ["Nuit & Feu", "Vent du Désert", "Marché Médiéval", "Ville Moderne"];
+            const trackName = document.getElementById('track-name');
+            trackName.innerText = labels[newIndex];
+
+            // GESTION MUSIQUE
+            // On ne change la musique que si on change de zone OU si on vient d'activer l'audio
+            if ((newIndex !== currentZoneIndex || forceStart) && audioActive) {
+                // 1. On coupe l'ancienne
+                if(currentZoneIndex !== -1) {
+                    const oldSound = document.getElementById(ambiences[currentZoneIndex]);
+                    if(oldSound) {
+                        // Petit fondu de sortie manuel (optionnel) ou coupure nette
+                        oldSound.pause(); 
+                        oldSound.currentTime = 0;
+                    }
+                }
+                
+                // 2. On lance la nouvelle
+                const newSound = document.getElementById(ambiences[newIndex]);
+                if(newSound) {
+                    // Volume différent selon l'époque
+                    newSound.volume = (newIndex === 0) ? 0.4 : 0.1; 
+                    newSound.play().catch(e => console.log("Click requis"));
+                }
+                
+                currentZoneIndex = newIndex;
+            }
+        }
+
+        function playSfx(id) {
+            const s = document.getElementById(id);
+            if(s) {
+                s.currentTime = 0; // Rembobine pour rejouer vite
+                s.play().catch(e => console.log("Audio bloqué"));
+            }
+        }
+
+        // --- MOTEUR ---
         function update() {
             scrollPct = Math.max(0, Math.min(100, scrollPct));
             knob.style.left = (scrollPct * 0.75) + '%';
             world.style.transform = `translateX(${-(scrollPct / 100) * 300}vw)`;
+            
+            // Mise à jour automatique de la musique au scroll
+            updateAudioContext();
+            
+            // Audio Simulation : Change le titre selon la zone
+            if(scrollPct < 25) trackName.innerText = "Nuit & Feu";
+            else if(scrollPct < 50) trackName.innerText = "Vent du Désert";
+            else if(scrollPct < 75) trackName.innerText = "Place du Village";
+            else trackName.innerText = "Ville & Usines";
         }
 
         window.jump = (val) => { scrollPct = val; update(); }
 
+        // --- HOTSPOTS ---
+        window.toggleInfo = (btn) => {
+            const bubble = btn.nextElementSibling;
+            document.querySelectorAll('.info-bubble').forEach(b => { if(b!==bubble) b.classList.remove('active'); });
+            bubble.classList.toggle('active');
+        }
+
+        // --- NAV DRAG ---
         function navMove(e) {
             if(!isNav) return;
             e.preventDefault();
@@ -298,8 +457,9 @@
         window.addEventListener('mousemove', navMove);
         window.addEventListener('touchmove', navMove, {passive:false});
 
+        // --- LIKO DRAG ---
         function likoMove(e) {
-            if(!isLiko) return;
+            if(!isLikoDrag) return;
             e.preventDefault();
             const cx = e.touches ? e.touches[0].clientX : e.clientX;
             const cy = e.touches ? e.touches[0].clientY : e.clientY;
@@ -308,7 +468,7 @@
         }
 
         function likoStart(e) {
-            isLiko = true;
+            isLikoDrag = true;
             ghost.style.opacity = 1;
             liko.style.opacity = 0;
             likoMove(e);
@@ -317,28 +477,28 @@
         }
 
         function likoEnd() {
-            if(!isLiko) return;
-            isLiko = false;
+            if(!isLikoDrag) return;
+            isLikoDrag = false;
             ghost.style.opacity = 0;
 
-            // Logique de Victoire (Préhistoire < 20%)
-            if(scrollPct < 20) {
-                const landed = document.getElementById('liko-landed');
-                landed.style.display = 'block';
-                landed.style.left = '50vw'; 
-                setTimeout(() => document.getElementById('victory').style.display = 'flex', 800);
-            } else {
-                // Erreur : Afficher la flèche
-                liko.style.opacity = 1;
+            // VICTOIRE : Zone 1 (Préhistoire)
+            if(scrollPct < 25) {
+                document.querySelector('.top-hud').style.display = 'none';
+                document.getElementById('liko-landed').style.display = 'block';
+                document.getElementById('liko-landed').style.left = '15%'; 
                 
-                if (scrollPct > 20) {
-                    // Si on est trop à droite (futur), montrer flèche gauche
+                setTimeout(() => {
+                    victoryScreen.style.display = 'flex';
+                    setTimeout(() => {
+                        victoryScreen.style.opacity = '1';
+                        victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(1)';
+                    }, 50);
+                }, 800);
+            } else {
+                liko.style.opacity = 1;
+                if(scrollPct > 20) {
                     arrowL.style.display = 'flex';
                     setTimeout(() => arrowL.style.display = 'none', 3000);
-                } else {
-                    // Cas rare : trop à gauche (si cible ailleurs), ici juste pour la logique
-                    arrowR.style.display = 'flex';
-                    setTimeout(() => arrowR.style.display = 'none', 3000);
                 }
             }
         }
@@ -350,6 +510,25 @@
         window.addEventListener('mouseup', likoEnd);
         window.addEventListener('touchend', likoEnd);
 
+        update();
+
     </script>
+
+    <audio id="bg-pre" loop preload="auto">
+        <source src="sons/prehistoire.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bg-ant" loop preload="auto">
+        <source src="sons/antiquite.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bg-moy" loop preload="auto">
+        <source src="sons/moyenage.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="bg-mod" loop preload="auto">
+        <source src="sons/moderne.mp3" type="audio/mpeg">
+    </audio>
+
 </body>
 </html>
