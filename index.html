@@ -37,16 +37,16 @@
             z-index: 0; overflow: hidden; 
         }
         #world-track { 
-            display: flex; height: 100%; width: 2000%; /* Total flex = 20, donc 20 écrans */
+            display: flex; height: 100%; width: 600%; /* Total flex = 6 (toutes égales) */
             will-change: transform; transition: transform 0.1s linear; 
         }
         .era-slide { height: 100%; position: relative; overflow: hidden; }
-        .slide-1 { flex: 12; } /* Préhistoire: 400,000 ans */
-        .slide-2 { flex: 2; } /* Antiquité: 3,500 ans */
-        .slide-3 { flex: 2; } /* Moyen-Âge: 1,000 ans */
-        .slide-4 { flex: 1.4; } /* Renaissance: 300 ans */
-        .slide-5 { flex: 1.6; } /* Révolution Industrielle: 150 ans */
-        .slide-6 { flex: 1; } /* Moderne: 80 ans = 1 écran minimum */
+        .slide-1 { flex: 1; } /* Préhistoire: -30 000 à -3 000 */
+        .slide-2 { flex: 1; } /* Antiquité: 3,500 ans */
+        .slide-3 { flex: 1; } /* Moyen-Âge: 1,000 ans */
+        .slide-4 { flex: 1; } /* Renaissance: 300 ans */
+        .slide-5 { flex: 1; } /* Révolution Industrielle: 150 ans */
+        .slide-6 { flex: 1; } /* Moderne: 80 ans */
 
         /* --- DÉCORS (GARDÉS DE LA VERSION PRÉCÉDENTE) --- */
         .slide-1 { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
@@ -171,12 +171,12 @@
         .nav-seg { height: 100%; opacity: 0.8; transition: 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.7); font-weight: bold; font-size: 12px; text-transform: uppercase; text-align: center; padding: 0px 15px; }
         .nav-seg:hover { opacity: 1; color: white; }
         
-        .seg-1 { background: var(--c-pre); flex: 12; } /* Préhistoire: 400,000 ans */
-        .seg-2 { background: var(--c-ant); flex: 2; } /* Antiquité: 3,500 ans */
-        .seg-3 { background: var(--c-moy); flex: 2; } /* Moyen-Âge: 1,000 ans */
-        .seg-4 { background: var(--c-ren); flex: 1.4; } /* Renaissance: 300 ans */
-        .seg-5 { background: var(--c-ind); flex: 1.6; } /* Révolution Industrielle: 150 ans */
-        .seg-6 { background: var(--c-mod); flex: 1; } /* Moderne: 80 ans = 1 écran */
+        .seg-1 { background: var(--c-pre); flex: 1; } /* Préhistoire: -30 000 à -3 000 */
+        .seg-2 { background: var(--c-ant); flex: 1; } /* Antiquité: 3,500 ans */
+        .seg-3 { background: var(--c-moy); flex: 1; } /* Moyen-Âge: 1,000 ans */
+        .seg-4 { background: var(--c-ren); flex: 1; } /* Renaissance: 300 ans */
+        .seg-5 { background: var(--c-ind); flex: 1; } /* Révolution Industrielle: 150 ans */
+        .seg-6 { background: var(--c-mod); flex: 1; } /* Moderne: 80 ans */
 
         /* --- FRISE STATIQUE À L'ÉCHELLE --- */
         .static-scale { position: absolute; left: 30px; right: 30px; top: 150px; z-index: 120; pointer-events: none; }
@@ -192,9 +192,9 @@
         .scale-ren { background: var(--c-ren); }
         .scale-ind { background: var(--c-ind); }
         .scale-mod { background: var(--c-mod); }
-        .scale-pointer { position: absolute; top: -8px; width: 3px; height: 60px; background: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); border-radius: 2px; pointer-events: none; }
+        .scale-pointer { position: absolute; top: -8px; width: 3px; height: 60px; background: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); border-radius: 2px; pointer-events: none; transition: left 0.1s linear; }
         .scale-pointer-label { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: white; color: #2c3e50; padding: 2px 6px; border-radius: 8px; font-weight: 800; font-size: 11px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap; }
-        .scale-walker { position: absolute; top: 50%; left: 0%; transform: translateX(-50%) translateY(-50%); font-size: 24px; pointer-events: none; transition: left 0.1s linear; }
+        .scale-cursor { position: absolute; top: 50%; left: 0%; transform: translateX(-50%) translateY(-50%); font-size: 26px; pointer-events: none; transition: left 0.1s linear; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4)); z-index: 10; }
         .scale-legend { display: flex; justify-content: space-between; color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 6px; }
         .scale-note { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 4px; }
 
@@ -288,9 +288,9 @@
 
                 <div class="ground">
                     <div class="timeline-markers">
-                        <div class="marker-main" style="left: 20px;">-400 000</div>
-                        <div class="marker-sub" style="left: 40%;"><span>-30 000</span></div>
-                        <div class="marker-sub" style="left: 70%;"><span>-10 000</span></div>
+                        <div class="marker-main" style="left: 20px;">-30 000</div>
+                        <div class="marker-sub" style="left: 50%;"><span>-15 000</span></div>
+                        <div class="marker-sub" style="left: 90%;"><span>-3 000</span></div>
                     </div>
                 </div>
             </div>
@@ -412,11 +412,11 @@
         <div class="nav-bar" id="nav-container">
             <div class="nav-track">
                 <div class="nav-seg seg-1" onclick="jump(0)">Préhistoire</div>
-                <div class="nav-seg seg-2" onclick="jump(60)">Antiquité</div>
-                <div class="nav-seg seg-3" onclick="jump(70)">Moyen-Âge</div>
-                <div class="nav-seg seg-4" onclick="jump(80)">Renaissance</div>
-                <div class="nav-seg seg-5" onclick="jump(87)">Révolution Industrielle</div>
-                <div class="nav-seg seg-6" onclick="jump(95)">Moderne</div>
+                <div class="nav-seg seg-2" onclick="jump(16.67)">Antiquité</div>
+                <div class="nav-seg seg-3" onclick="jump(33.33)">Moyen-Âge</div>
+                <div class="nav-seg seg-4" onclick="jump(50)">Renaissance</div>
+                <div class="nav-seg seg-5" onclick="jump(66.67)">Révolution Industrielle</div>
+                <div class="nav-seg seg-6" onclick="jump(83.33)">Moderne</div>
                 <div class="nav-knob" id="knob"><span class="grip-lines">|||</span></div>
             </div>
         </div>
@@ -426,17 +426,17 @@
         <div class="scale-card">
             <div class="scale-title">Frise chronologique statique (à l'échelle)</div>
             <div class="scale-bar">
-                <div class="scale-pointer" id="scale-pointer"></div>
-                <div class="scale-walker" id="scale-walker">🧑</div>
-                <div class="scale-seg scale-pre" style="flex: 5000;"><!-- <span>Préhistoire</span><small>400 000 ans</small> --></div>
-                <div class="scale-seg scale-ant" style="flex: 43.75;"><!-- <span>Antiquité</span><small>3 500 ans</small> --></div>
-                <div class="scale-seg scale-moy" style="flex: 12.5;"><!-- <span>Moyen-Âge</span><small>1 000 ans</small> --></div>
-                <div class="scale-seg scale-ren" style="flex: 3.75;"><!-- <span>Renaissance</span><small>300 ans</small> --></div>
-                <div class="scale-seg scale-ind" style="flex: 1.875;"><!-- <span>Révolution Ind.</span><small>150 ans</small> --></div>
-                <div class="scale-seg scale-mod" style="flex: 1;"><!-- <span>Moderne</span><small>80 ans</small> --></div>
+                <div class="scale-pointer" id="scale-pointer"><div class="scale-pointer-label" id="scale-year-label">-30 000</div></div>
+                <div class="scale-cursor" id="scale-cursor">📍</div>
+                <div class="scale-seg scale-pre" style="flex: 27;"><!-- <span>Préhistoire</span><small>27 000 ans</small> --></div>
+                <div class="scale-seg scale-ant" style="flex: 3.5;"><!-- <span>Antiquité</span><small>3 500 ans</small> --></div>
+                <div class="scale-seg scale-moy" style="flex: 1;"><!-- <span>Moyen-Âge</span><small>1 000 ans</small> --></div>
+                <div class="scale-seg scale-ren" style="flex: 0.3;"><!-- <span>Renaissance</span><small>300 ans</small> --></div>
+                <div class="scale-seg scale-ind" style="flex: 0.15;"><!-- <span>Révolution Ind.</span><small>150 ans</small> --></div>
+                <div class="scale-seg scale-mod" style="flex: 0.08;"><!-- <span>Moderne</span><small>80 ans</small> --></div>
             </div>
             <div class="scale-legend">
-                <span>-400 000</span>
+                <span>-30 000</span>
                 <span>-3 000</span>
                 <span>476</span>
                 <span>1492</span>
@@ -473,7 +473,7 @@
                 <div style="font-size: 150px; position:absolute; left:-20px;">⛰️</div>
                 <div style="font-size: 150px; position:absolute; right:0; transform:rotate(10deg);">✌️<img src="images/Liko.png" alt="liko" class="liko-img" style="width: 100px; height: 100px; vertical-align: middle;"></div>
             </div>
-            <div class="polaroid-caption">Souvenir de -400 000 !</div>
+            <div class="polaroid-caption">Souvenir de -30 000 !</div>
             <button onclick="location.reload()" style="margin-top: 30px; font-size: 24px; padding: 15px 40px; border-radius: 50px; border: 3px solid #333; background: #FFD700; cursor: pointer; font-weight: 900; box-shadow: 5px 5px 0 #333;">REJOUER</button>
         </div>
     </div>
@@ -490,16 +490,53 @@
         const navSegments = Array.from(document.querySelectorAll('.nav-seg'));
         const eraIndicator = document.getElementById('era-name');
         const scalePointer = document.getElementById('scale-pointer');
+        const scaleCursor = document.getElementById('scale-cursor');
+        const scaleYearLabel = document.getElementById('scale-year-label');
+        
+        // Calcul temporel
+        const timelineStart = -30000;
+        const timelineEnd = 2024;
+        const timelineRange = timelineEnd - timelineStart;
 
-        // Flex de base de chaque époque (plus réaliste) et facteur d'agrandissement
-        const eraFlex = [14, 2, 2, 1.4, 1.6, 1];
-        const growthMultiplier = 2.5; // facteur d'agrandissement temporaire
-
-        function applyEraFlex(activeIdx) {
-            navSegments.forEach((seg, i) => {
-                const factor = i === activeIdx ? growthMultiplier : 1;
-                seg.style.flex = eraFlex[i] * factor;
-            });
+        // Flex de base de chaque époque (toutes égales)
+        const eraFlex = [1, 1, 1, 1, 1, 1];
+        
+        // Flex de la frise statique (proportions réalistes de -30 000 à 2024)
+        const staticFlex = [27, 3.5, 1, 0.3, 0.15, 0.08]; // 27k, 3.5k, 1k, 300, 150, 80 ans
+        const staticTotal = staticFlex.reduce((a, b) => a + b, 0);
+        
+        // Calcul des seuils de la frise statique en %
+        const staticThresholds = [0];
+        let cumul = 0;
+        for (let i = 0; i < staticFlex.length; i++) {
+            cumul += (staticFlex[i] / staticTotal) * 100;
+            staticThresholds.push(cumul);
+        }
+        
+        // Fonction de mapping entre frise interactive et frise statique
+        function mapToStaticScale(scrollPct) {
+            // Bornes de la frise interactive: époques égales (16.67% chacune)
+            const interactiveBounds = [0, 16.67, 33.33, 50, 66.67, 83.33, 100];
+            
+            // Trouve l'époque courante
+            let eraIdx = 0;
+            for (let i = 0; i < interactiveBounds.length - 1; i++) {
+                if (scrollPct >= interactiveBounds[i] && scrollPct < interactiveBounds[i + 1]) {
+                    eraIdx = i;
+                    break;
+                }
+            }
+            if (scrollPct >= 83.33) eraIdx = 5;
+            
+            // Position relative dans l'époque (0 à 1)
+            const eraStart = interactiveBounds[eraIdx];
+            const eraEnd = interactiveBounds[eraIdx + 1];
+            const relativePos = (scrollPct - eraStart) / (eraEnd - eraStart);
+            
+            // Mappe vers la frise statique
+            const staticStart = staticThresholds[eraIdx];
+            const staticEnd = staticThresholds[eraIdx + 1];
+            return staticStart + relativePos * (staticEnd - staticStart);
         }
 
         let scrollPct = 0;
@@ -511,24 +548,32 @@
             scrollPct = Math.max(0, Math.min(100, scrollPct));
 
             // Détecte l'époque courante pour élargir temporairement la zone
-            // Bornes: [0-60[, [60-70[, [70-80[, [80-87[, [87-95[, [95-100]
+            // Bornes: époques égales (16.67% chacune)
             const eraNames = ['PRÉHISTOIRE', 'ANTIQUITÉ', 'MOYEN-ÂGE', 'RENAISSANCE', 'RÉVOLUTION INDUSTRIELLE', 'MODERNE'];
             let eraIdx = 0;
-            if (scrollPct >= 60 && scrollPct < 70) eraIdx = 1;
-            else if (scrollPct >= 70 && scrollPct < 80) eraIdx = 2;
-            else if (scrollPct >= 80 && scrollPct < 87) eraIdx = 3;
-            else if (scrollPct >= 87 && scrollPct < 95) eraIdx = 4;
-            else if (scrollPct >= 95) eraIdx = 5;
+            if (scrollPct >= 16.67 && scrollPct < 33.33) eraIdx = 1;
+            else if (scrollPct >= 33.33 && scrollPct < 50) eraIdx = 2;
+            else if (scrollPct >= 50 && scrollPct < 66.67) eraIdx = 3;
+            else if (scrollPct >= 66.67 && scrollPct < 83.33) eraIdx = 4;
+            else if (scrollPct >= 83.33) eraIdx = 5;
             
             eraIndicator.textContent = eraNames[eraIdx];
-            applyEraFlex(eraIdx);
             // Le Knob bouge de 0 à 83.3% (6 segments de 16.6% chacun)
             knob.style.left = (scrollPct * 0.833) + '%';
-            // Le monde bouge de 0 à -1900vw (2000% - 100%)
-            world.style.transform = `translateX(${-(scrollPct / 100) * 1900}vw)`;
-            // Met à jour le pointeur de la frise statique
+            // Le monde bouge de 0 à -500vw (600% - 100%)
+            world.style.transform = `translateX(${-(scrollPct / 100) * 500}vw)`;
+            
+            // Met à jour le pointeur et le curseur de la frise statique (mapping proportionnel)
+            const staticPct = mapToStaticScale(scrollPct);
             if (scalePointer) {
-                scalePointer.style.left = scrollPct + '%';
+                scalePointer.style.left = staticPct + '%';
+            }
+            if (scaleCursor) {
+                scaleCursor.style.left = staticPct + '%';
+            }
+            if (scaleYearLabel) {
+                const currentYear = Math.round(timelineStart + (scrollPct / 100) * timelineRange);
+                scaleYearLabel.textContent = currentYear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
             }
         }
 
@@ -585,8 +630,8 @@
             isDrag = false;
             ghost.style.opacity = 0;
 
-            // VICTOIRE : Zone Préhistoire (< 60%)
-            if(scrollPct < 60) {
+            // VICTOIRE : Zone Préhistoire (< 16.67%)
+            if(scrollPct < 16.67) {
                 document.querySelector('.top-hud').style.display = 'none'; // Cache Mission
                 document.getElementById('liko-landed').style.display = 'block';
                 document.getElementById('liko-landed').style.left = '15%'; 
@@ -601,8 +646,8 @@
             } else {
                 // ERREUR
                 liko.style.opacity = 1;
-                // Si on est dans le futur (> 60%), montrer flèche gauche
-                if (scrollPct > 60) {
+                // Si on est dans le futur (> 16.67%), montrer flèche gauche
+                if (scrollPct > 16.67) {
                     arrowL.style.display = 'flex';
                     setTimeout(() => arrowL.style.display = 'none', 3000);
                 }
