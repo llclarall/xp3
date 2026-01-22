@@ -148,7 +148,7 @@
 
         /* --- UI BASSE (CONTROLS - ZONE MAINS) --- */
         .top-nav {
-            position: absolute; top: 180px; left: 0; width: 100%;
+            position: absolute; top: 300px; left: 0; width: 100%;
             padding: 0 30px; box-sizing: border-box; z-index: 110;
         }
 
@@ -168,7 +168,7 @@
         }
         .nav-track { flex: 1; height: 100%; border-radius: 32px; position: relative; overflow: hidden; display: flex; }
         
-        .nav-seg { height: 100%; opacity: 0.8; transition: 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.7); font-weight: bold; font-size: 12px; text-transform: uppercase; text-align: center; padding: 0px 10px; }
+        .nav-seg { height: 100%; opacity: 0.8; transition: 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.7); font-weight: bold; font-size: 12px; text-transform: uppercase; text-align: center; padding: 0px 15px; }
         .nav-seg:hover { opacity: 1; color: white; }
         
         .seg-1 { background: var(--c-pre); flex: 12; } /* Préhistoire: 400,000 ans */
@@ -178,12 +178,37 @@
         .seg-5 { background: var(--c-ind); flex: 1.6; } /* Révolution Industrielle: 150 ans */
         .seg-6 { background: var(--c-mod); flex: 1; } /* Moderne: 80 ans = 1 écran */
 
-        .nav-knob {
-            position: absolute; left: 0; top: 0; width: 16.6%; height: 100%;
-            border: 5px solid white; border-radius: 32px; box-sizing: border-box;
-            box-shadow: 0 0 0 2000px rgba(0,0,0,0.5); /* Focus visuel */
-            cursor: ew-resize; display: flex; justify-content: center; align-items: center;
-        }
+        /* --- FRISE STATIQUE À L'ÉCHELLE --- */
+        .static-scale { position: absolute; left: 30px; right: 30px; top: 150px; z-index: 120; pointer-events: none; }
+        .scale-card { background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.25); border-radius: 18px; padding: 10px 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.35); }
+        .scale-title { color: white; font-weight: 900; font-size: 14px; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; opacity: 0.85; }
+        .scale-bar { position: relative; display: flex; height: 44px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        .scale-seg { position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; gap: 2px; padding: 0 6px; min-width: 16px; }
+        .scale-seg span { font-weight: 800; font-size: 12px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); white-space: nowrap; }
+        .scale-seg small { font-size: 10px; opacity: 0.85; white-space: nowrap; }
+        .scale-pre { background: var(--c-pre); }
+        .scale-ant { background: var(--c-ant); }
+        .scale-moy { background: var(--c-moy); }
+        .scale-ren { background: var(--c-ren); }
+        .scale-ind { background: var(--c-ind); }
+        .scale-mod { background: var(--c-mod); }
+        .scale-pointer { position: absolute; top: -8px; width: 3px; height: 60px; background: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); border-radius: 2px; pointer-events: none; }
+        .scale-pointer-label { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: white; color: #2c3e50; padding: 2px 6px; border-radius: 8px; font-weight: 800; font-size: 11px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap; }
+        .scale-walker { position: absolute; top: 50%; left: 0%; transform: translateX(-50%) translateY(-50%); font-size: 24px; pointer-events: none; transition: left 0.1s linear; }
+        .scale-legend { display: flex; justify-content: space-between; color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 6px; }
+        .scale-note { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 4px; }
+
+        /* CURSEUR ADAPTATIF */
+.nav-knob {
+    position: absolute; left: 0; top: 0; height: 100%;
+    /* La largeur sera pilotée par le JS, on met une valeur par défaut */
+    width: 16.66%; 
+    border: 5px solid white; border-radius: 32px; box-sizing: border-box;
+    box-shadow: 0 0 0 2000px rgba(0,0,0,0.5); /* Focus visuel qui assombrit le reste */
+    cursor: ew-resize; display: flex; justify-content: center; align-items: center;
+    /* Animation fluide quand la largeur change */
+    transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
+}
         .grip-lines { color: white; font-weight: 900; font-size: 24px; letter-spacing: -2px; }
 
         /* Le Dock du Personnage */
@@ -397,6 +422,31 @@
         </div>
     </div>
 
+    <div class="static-scale">
+        <div class="scale-card">
+            <div class="scale-title">Frise chronologique statique (à l'échelle)</div>
+            <div class="scale-bar">
+                <div class="scale-pointer" id="scale-pointer"></div>
+                <div class="scale-walker" id="scale-walker">🧑</div>
+                <div class="scale-seg scale-pre" style="flex: 5000;"><!-- <span>Préhistoire</span><small>400 000 ans</small> --></div>
+                <div class="scale-seg scale-ant" style="flex: 43.75;"><!-- <span>Antiquité</span><small>3 500 ans</small> --></div>
+                <div class="scale-seg scale-moy" style="flex: 12.5;"><!-- <span>Moyen-Âge</span><small>1 000 ans</small> --></div>
+                <div class="scale-seg scale-ren" style="flex: 3.75;"><!-- <span>Renaissance</span><small>300 ans</small> --></div>
+                <div class="scale-seg scale-ind" style="flex: 1.875;"><!-- <span>Révolution Ind.</span><small>150 ans</small> --></div>
+                <div class="scale-seg scale-mod" style="flex: 1;"><!-- <span>Moderne</span><small>80 ans</small> --></div>
+            </div>
+            <div class="scale-legend">
+                <span>-400 000</span>
+                <span>-3 000</span>
+                <span>476</span>
+                <span>1492</span>
+                <span>1789</span>
+                <span>1945</span>
+                <span>2024</span>
+            </div>
+        </div>
+    </div>
+
     <div class="bottom-hud">
         <div class="char-dock">
             <div class="liko-token" id="liko"><img src="images/Liko.png" alt="liko" class="liko-img"></div>
@@ -439,9 +489,10 @@
         const victoryScreen = document.getElementById('victory');
         const navSegments = Array.from(document.querySelectorAll('.nav-seg'));
         const eraIndicator = document.getElementById('era-name');
+        const scalePointer = document.getElementById('scale-pointer');
 
         // Flex de base de chaque époque (plus réaliste) et facteur d'agrandissement
-        const eraFlex = [12, 2, 2, 1.4, 1.6, 1];
+        const eraFlex = [14, 2, 2, 1.4, 1.6, 1];
         const growthMultiplier = 2.5; // facteur d'agrandissement temporaire
 
         function applyEraFlex(activeIdx) {
@@ -475,6 +526,10 @@
             knob.style.left = (scrollPct * 0.833) + '%';
             // Le monde bouge de 0 à -1900vw (2000% - 100%)
             world.style.transform = `translateX(${-(scrollPct / 100) * 1900}vw)`;
+            // Met à jour le pointeur de la frise statique
+            if (scalePointer) {
+                scalePointer.style.left = scrollPct + '%';
+            }
         }
 
         window.jump = (val) => { scrollPct = val; update(); }
