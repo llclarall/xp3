@@ -479,189 +479,241 @@
     </div>
 
     <script>
-        const world = document.getElementById('world-track');
-        const knob = document.getElementById('knob');
-        const navContainer = document.getElementById('nav-container');
-        const liko = document.getElementById('liko');
-        const ghost = document.getElementById('ghost');
-        const arrowL = document.getElementById('arrow-left');
-        const arrowR = document.getElementById('arrow-right');
-        const victoryScreen = document.getElementById('victory');
-        const navSegments = Array.from(document.querySelectorAll('.nav-seg'));
-        const eraIndicator = document.getElementById('era-name');
-        const scalePointer = document.getElementById('scale-pointer');
-        const scaleCursor = document.getElementById('scale-cursor');
-        const scaleYearLabel = document.getElementById('scale-year-label');
+        // --- RÉFÉRENCES DOM ---
+const gameViewport = document.getElementById('game-viewport'); // L'écran de jeu
+const world = document.getElementById('world-track');
+const knob = document.getElementById('knob');
+const navContainer = document.getElementById('nav-container');
+const liko = document.getElementById('liko');
+const ghost = document.getElementById('ghost');
+const arrowL = document.getElementById('arrow-left');
+const arrowR = document.getElementById('arrow-right');
+const victoryScreen = document.getElementById('victory');
+const navSegments = Array.from(document.querySelectorAll('.nav-seg'));
+const eraIndicator = document.getElementById('era-name');
+
+// Éléments de la frise statique
+const scalePointer = document.getElementById('scale-pointer');
+const scaleCursor = document.getElementById('scale-cursor');
+const scaleYearLabel = document.getElementById('scale-year-label');
+
+// --- CALCULS TEMPORELS ---
+const timelineStart = -30000;
+const timelineEnd = 2024;
+const timelineRange = timelineEnd - timelineStart;
+
+// Mapping Frise Interactive -> Frise Statique (Proportions réalistes)
+// 6 époques interactives égales (16.66% chacune) mappées vers des durées réelles inégales
+const staticFlex = [27, 3.5, 1, 0.3, 0.15, 0.08]; 
+const staticTotal = staticFlex.reduce((a, b) => a + b, 0);
+const staticThresholds = [0];
+let cumul = 0;
+for (let i = 0; i < staticFlex.length; i++) {
+    cumul += (staticFlex[i] / staticTotal) * 100;
+    staticThresholds.push(cumul);
+}
+
+function mapToStaticScale(scrollPct) {
+    const interactiveBounds = [0, 16.67, 33.33, 50, 66.67, 83.33, 100];
+    let eraIdx = 0;
+    for (let i = 0; i < interactiveBounds.length - 1; i++) {
+        if (scrollPct >= interactiveBounds[i] && scrollPct < interactiveBounds[i + 1]) {
+            eraIdx = i;
+            break;
+        }
+    }
+    if (scrollPct >= 83.33) eraIdx = 5;
+    
+    const eraStart = interactiveBounds[eraIdx];
+    const eraEnd = interactiveBounds[eraIdx + 1];
+    const relativePos = (scrollPct - eraStart) / (eraEnd - eraStart);
+    
+    const staticStart = staticThresholds[eraIdx];
+    const staticEnd = staticThresholds[eraIdx + 1];
+    return staticStart + relativePos * (staticEnd - staticStart);
+}
+
+// --- ÉTATS ---
+let scrollPct = 0;
+let isNav = false;      // Navigation via la barre du bas
+let isDrag = false;     // Drag & Drop de Liko
+let isWorldDrag = false; // Drag du Monde (Swipe)
+let lastMouseX = 0;     // Pour calculer le delta du swipe
+
+// --- MOTEUR PRINCIPAL ---
+function update() {
+    scrollPct = Math.max(0, Math.min(100, scrollPct));
+
+    // 1. Mise à jour du nom de l'époque
+    const eraNames = ['PRÉHISTOIRE', 'ANTIQUITÉ', 'MOYEN-ÂGE', 'RENAISSANCE', 'RÉVOLUTION INDUSTRIELLE', 'MODERNE'];
+    let eraIdx = 0;
+    if (scrollPct >= 16.67 && scrollPct < 33.33) eraIdx = 1;
+    else if (scrollPct >= 33.33 && scrollPct < 50) eraIdx = 2;
+    else if (scrollPct >= 50 && scrollPct < 66.67) eraIdx = 3;
+    else if (scrollPct >= 66.67 && scrollPct < 83.33) eraIdx = 4;
+    else if (scrollPct >= 83.33) eraIdx = 5;
+    
+    if(eraIndicator) eraIndicator.textContent = eraNames[eraIdx];
+
+    // 2. Déplacement visuel
+    knob.style.left = (scrollPct * 0.833) + '%';
+    world.style.transform = `translateX(${-(scrollPct / 100) * 500}vw)`;
+    
+    // 3. Mise à jour frise statique
+    const staticPct = mapToStaticScale(scrollPct);
+    if (scalePointer) scalePointer.style.left = staticPct + '%';
+    if (scaleCursor) scaleCursor.style.left = staticPct + '%';
+    if (scaleYearLabel) {
+        const currentYear = Math.round(timelineStart + (scrollPct / 100) * timelineRange);
+        scaleYearLabel.textContent = currentYear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    }
+}
+
+// Saut via clic sur la barre de navigation
+window.jump = (val) => { scrollPct = val; update(); }
+
+// Gestion des bulles d'info
+window.toggleInfo = (btn) => {
+    const bubble = btn.nextElementSibling;
+    document.querySelectorAll('.info-bubble').forEach(b => { if(b!==bubble) b.classList.remove('active'); });
+    bubble.classList.toggle('active');
+}
+
+// --- 1. NAVIGATION : SWIPE DU MONDE (NOUVEAU) ---
+gameViewport.addEventListener('mousedown', (e) => {
+    // On ne lance pas le swipe si on clique sur l'UI, le perso ou un bouton
+    if (e.target.closest('.nav-bar') || 
+        e.target.closest('.liko-token') || 
+        e.target.closest('.hotspot-btn') ||
+        isNav || isDrag) return;
+
+    isWorldDrag = true;
+    lastMouseX = e.clientX;
+    gameViewport.style.cursor = 'grabbing'; // Curseur "main fermée"
+});
+
+window.addEventListener('mousemove', (e) => {
+    // Logique du Swipe Monde
+    if (isWorldDrag) {
+        e.preventDefault();
+        const delta = e.clientX - lastMouseX;
         
-        // Calcul temporel
-        const timelineStart = -30000;
-        const timelineEnd = 2024;
-        const timelineRange = timelineEnd - timelineStart;
-
-        // Flex de base de chaque époque (toutes égales)
-        const eraFlex = [1, 1, 1, 1, 1, 1];
+        // Sensibilité : Déplacer la souris d'une largeur d'écran = 20% de scroll (1 époque)
+        // Signe négatif car tirer à gauche (delta < 0) = avancer à droite (scroll +)
+        const pctChange = -(delta / window.innerWidth) * 20;
         
-        // Flex de la frise statique (proportions réalistes de -30 000 à 2024)
-        const staticFlex = [27, 3.5, 1, 0.3, 0.15, 0.08]; // 27k, 3.5k, 1k, 300, 150, 80 ans
-        const staticTotal = staticFlex.reduce((a, b) => a + b, 0);
-        
-        // Calcul des seuils de la frise statique en %
-        const staticThresholds = [0];
-        let cumul = 0;
-        for (let i = 0; i < staticFlex.length; i++) {
-            cumul += (staticFlex[i] / staticTotal) * 100;
-            staticThresholds.push(cumul);
-        }
-        
-        // Fonction de mapping entre frise interactive et frise statique
-        function mapToStaticScale(scrollPct) {
-            // Bornes de la frise interactive: époques égales (16.67% chacune)
-            const interactiveBounds = [0, 16.67, 33.33, 50, 66.67, 83.33, 100];
-            
-            // Trouve l'époque courante
-            let eraIdx = 0;
-            for (let i = 0; i < interactiveBounds.length - 1; i++) {
-                if (scrollPct >= interactiveBounds[i] && scrollPct < interactiveBounds[i + 1]) {
-                    eraIdx = i;
-                    break;
-                }
-            }
-            if (scrollPct >= 83.33) eraIdx = 5;
-            
-            // Position relative dans l'époque (0 à 1)
-            const eraStart = interactiveBounds[eraIdx];
-            const eraEnd = interactiveBounds[eraIdx + 1];
-            const relativePos = (scrollPct - eraStart) / (eraEnd - eraStart);
-            
-            // Mappe vers la frise statique
-            const staticStart = staticThresholds[eraIdx];
-            const staticEnd = staticThresholds[eraIdx + 1];
-            return staticStart + relativePos * (staticEnd - staticStart);
-        }
-
-        let scrollPct = 0;
-        let isNav = false;
-        let isDrag = false;
-
-        // --- MOTEUR ---
-        function update() {
-            scrollPct = Math.max(0, Math.min(100, scrollPct));
-
-            // Détecte l'époque courante pour élargir temporairement la zone
-            // Bornes: époques égales (16.67% chacune)
-            const eraNames = ['PRÉHISTOIRE', 'ANTIQUITÉ', 'MOYEN-ÂGE', 'RENAISSANCE', 'RÉVOLUTION INDUSTRIELLE', 'MODERNE'];
-            let eraIdx = 0;
-            if (scrollPct >= 16.67 && scrollPct < 33.33) eraIdx = 1;
-            else if (scrollPct >= 33.33 && scrollPct < 50) eraIdx = 2;
-            else if (scrollPct >= 50 && scrollPct < 66.67) eraIdx = 3;
-            else if (scrollPct >= 66.67 && scrollPct < 83.33) eraIdx = 4;
-            else if (scrollPct >= 83.33) eraIdx = 5;
-            
-            eraIndicator.textContent = eraNames[eraIdx];
-            // Le Knob bouge de 0 à 83.3% (6 segments de 16.6% chacun)
-            knob.style.left = (scrollPct * 0.833) + '%';
-            // Le monde bouge de 0 à -500vw (600% - 100%)
-            world.style.transform = `translateX(${-(scrollPct / 100) * 500}vw)`;
-            
-            // Met à jour le pointeur et le curseur de la frise statique (mapping proportionnel)
-            const staticPct = mapToStaticScale(scrollPct);
-            if (scalePointer) {
-                scalePointer.style.left = staticPct + '%';
-            }
-            if (scaleCursor) {
-                scaleCursor.style.left = staticPct + '%';
-            }
-            if (scaleYearLabel) {
-                const currentYear = Math.round(timelineStart + (scrollPct / 100) * timelineRange);
-                scaleYearLabel.textContent = currentYear.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-            }
-        }
-
-        window.jump = (val) => { scrollPct = val; update(); }
-
-        window.toggleInfo = (btn) => {
-            const bubble = btn.nextElementSibling;
-            document.querySelectorAll('.info-bubble').forEach(b => { if(b!==bubble) b.classList.remove('active'); });
-            bubble.classList.toggle('active');
-        }
-
-        // --- NAV ---
-        function navMove(e) {
-            if(!isNav) return;
-            e.preventDefault();
-            const cx = e.touches ? e.touches[0].clientX : e.clientX;
-            const rect = navContainer.getBoundingClientRect();
-            
-            // Calcul dynamique basé sur la largeur totale actuelle (avec flex)
-            const totalWidth = rect.width;
-            let pct = ((cx - rect.left) / totalWidth) * 100;
-            scrollPct = Math.max(0, Math.min(100, pct));
-            update();
-        }
-
-        knob.addEventListener('mousedown', () => isNav=true);
-        knob.addEventListener('touchstart', () => isNav=true);
-        window.addEventListener('mouseup', () => isNav=false);
-        window.addEventListener('touchend', () => isNav=false);
-        window.addEventListener('mousemove', navMove);
-        window.addEventListener('touchmove', navMove, {passive:false});
-
-        // --- DRAG ---
-        function dragMove(e) {
-            if(!isDrag) return;
-            e.preventDefault();
-            const cx = e.touches ? e.touches[0].clientX : e.clientX;
-            const cy = e.touches ? e.touches[0].clientY : e.clientY;
-            ghost.style.left = (cx - 50) + 'px';
-            ghost.style.top = (cy - 50) + 'px';
-        }
-
-        function dragStart(e) {
-            isDrag = true;
-            ghost.style.opacity = 1;
-            liko.style.opacity = 0;
-            dragMove(e);
-            arrowL.style.display = 'none';
-            arrowR.style.display = 'none';
-        }
-
-        function dragEnd() {
-            if(!isDrag) return;
-            isDrag = false;
-            ghost.style.opacity = 0;
-
-            // VICTOIRE : Zone Préhistoire (< 16.67%)
-            if(scrollPct < 16.67) {
-                document.querySelector('.top-hud').style.display = 'none'; // Cache Mission
-                document.getElementById('liko-landed').style.display = 'block';
-                document.getElementById('liko-landed').style.left = '15%'; 
-                
-                setTimeout(() => {
-                    victoryScreen.style.display = 'flex';
-                    setTimeout(() => {
-                        victoryScreen.style.opacity = '1';
-                        victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(1)';
-                    }, 50);
-                }, 800);
-            } else {
-                // ERREUR
-                liko.style.opacity = 1;
-                // Si on est dans le futur (> 16.67%), montrer flèche gauche
-                if (scrollPct > 16.67) {
-                    arrowL.style.display = 'flex';
-                    setTimeout(() => arrowL.style.display = 'none', 3000);
-                }
-            }
-        }
-
-        liko.addEventListener('mousedown', dragStart);
-        liko.addEventListener('touchstart', dragStart);
-        window.addEventListener('mousemove', dragMove);
-        window.addEventListener('touchmove', dragMove, {passive:false});
-        window.addEventListener('mouseup', dragEnd);
-        window.addEventListener('touchend', dragEnd);
-
+        scrollPct += pctChange;
+        lastMouseX = e.clientX;
         update();
+    }
+    
+    // Logique Drag Nav Bar (existante)
+    if (isNav) {
+        e.preventDefault();
+        const rect = navContainer.getBoundingClientRect();
+        let pct = ((e.clientX - rect.left) / rect.width) * 100;
+        scrollPct = Math.max(0, Math.min(100, pct));
+        update();
+    }
+
+    // Logique Drag Liko (existante)
+    if (isDrag) {
+        e.preventDefault();
+        ghost.style.left = (e.clientX - 50) + 'px';
+        ghost.style.top = (e.clientY - 50) + 'px';
+    }
+});
+
+window.addEventListener('mouseup', () => {
+    if (isWorldDrag) {
+        isWorldDrag = false;
+        gameViewport.style.cursor = 'default';
+    }
+    isNav = false;
+    // Note : Le dragEnd de Liko est géré séparément ci-dessous
+});
+
+
+// --- 2. NAVIGATION : BARRE DU BAS ---
+// Géré via le mousemove global, juste l'initiation ici
+knob.addEventListener('mousedown', () => isNav = true);
+knob.addEventListener('touchstart', () => isNav = true);
+
+// Support tactile pour la Nav
+navContainer.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = navContainer.getBoundingClientRect();
+    let pct = ((touch.clientX - rect.left) / rect.width) * 100;
+    scrollPct = Math.max(0, Math.min(100, pct));
+    update();
+}, {passive: false});
+
+
+// --- 3. GAMEPLAY : DRAG LIKO ---
+function dragStart(e) {
+    isDrag = true;
+    ghost.style.opacity = 1;
+    liko.style.opacity = 0;
+    
+    // Position initiale du fantôme
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    ghost.style.left = (cx - 50) + 'px';
+    ghost.style.top = (cy - 50) + 'px';
+
+    arrowL.style.display = 'none';
+    arrowR.style.display = 'none';
+}
+
+function dragEnd() {
+    if(!isDrag) return;
+    isDrag = false;
+    ghost.style.opacity = 0;
+
+    // VICTOIRE : Zone Préhistoire (< 16.67%)
+    if(scrollPct < 16.67) {
+        document.querySelector('.top-hud').style.display = 'none';
+        const landed = document.getElementById('liko-landed');
+        landed.style.display = 'block';
+        landed.style.left = '15%'; 
+        
+        setTimeout(() => {
+            victoryScreen.style.display = 'flex';
+            setTimeout(() => {
+                victoryScreen.style.opacity = '1';
+                victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(1)';
+            }, 50);
+        }, 800);
+    } else {
+        // ÉCHEC
+        liko.style.opacity = 1;
+        if (scrollPct > 16.67) {
+            arrowL.style.display = 'flex';
+            setTimeout(() => arrowL.style.display = 'none', 3000);
+        }
+    }
+}
+
+// Listeners Liko
+liko.addEventListener('mousedown', dragStart);
+liko.addEventListener('touchstart', dragStart);
+
+// Support tactile Liko
+window.addEventListener('touchmove', (e) => {
+    if(!isDrag) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    ghost.style.left = (touch.clientX - 50) + 'px';
+    ghost.style.top = (touch.clientY - 50) + 'px';
+}, {passive: false});
+
+window.addEventListener('touchend', dragEnd);
+// Le mouseup global gère la fin du drag souris pour Liko si on ajoute ceci :
+window.addEventListener('mouseup', dragEnd);
+
+// Lancement
+update();
 
     </script>
 </body>
