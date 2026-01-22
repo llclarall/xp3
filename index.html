@@ -21,8 +21,8 @@
             --c-ant: #e67e22; 
             --c-moy: #27ae60; 
             --c-ren: #8e44ad; 
-            --c-ind: #2980b9;
-            --c-mod: #7f8c8d;
+            --c-ind: #7f8c8d;
+            --c-mod: #2980b9;
         }
 
         body {
@@ -37,16 +37,24 @@
             z-index: 0; overflow: hidden; 
         }
         #world-track { 
-            display: flex; height: 100%; width: 600%; /* 6 Époques */
+            display: flex; height: 100%; width: 2000%; /* Total flex = 20, donc 20 écrans */
             will-change: transform; transition: transform 0.1s linear; 
         }
-        .era-slide { flex: 1; height: 100%; position: relative; overflow: hidden; }
+        .era-slide { height: 100%; position: relative; overflow: hidden; }
+        .slide-1 { flex: 12; } /* Préhistoire: 400,000 ans */
+        .slide-2 { flex: 2; } /* Antiquité: 3,500 ans */
+        .slide-3 { flex: 2; } /* Moyen-Âge: 1,000 ans */
+        .slide-4 { flex: 1.4; } /* Renaissance: 300 ans */
+        .slide-5 { flex: 1.6; } /* Révolution Industrielle: 150 ans */
+        .slide-6 { flex: 1; } /* Moderne: 80 ans = 1 écran minimum */
 
         /* --- DÉCORS (GARDÉS DE LA VERSION PRÉCÉDENTE) --- */
         .slide-1 { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
         .slide-2 { background: linear-gradient(to bottom, #FF8008, #FFC837); }
         .slide-3 { background: linear-gradient(to bottom, #2980B9, #6DD5FA); }
-        .slide-4 { background: linear-gradient(to bottom, #bdc3c7, #2c3e50); }
+        .slide-4 { background: linear-gradient(to bottom, #654ea3, #eaafc8); }
+        .slide-5 { background: linear-gradient(to bottom, #434343, #000000); }
+        .slide-6 { background: linear-gradient(to bottom, #141E30, #243B55); }
 
         /* Éléments CSS Art */
         .mountain { position: absolute; bottom: var(--control-height); left: 0; width: 100%; height: 50%; background: #141E30; clip-path: polygon(0% 100%, 15% 30%, 30% 80%, 45% 40%, 60% 90%, 75% 20%, 90% 60%, 100% 100%); opacity: 0.8; }
@@ -114,10 +122,10 @@
         }
 
         .era-watermark { 
-            position: absolute; top: 12%; left: 50%; transform: translateX(-50%); 
-            font-size: 8vw; font-weight: 900; color: rgba(255,255,255,0.15); 
+            position: absolute; top: 10px; right: 50%; transform: translateX(50%); 
+            font-size: 6vw; font-weight: 900; color: rgba(255, 255, 255, 0.54); 
             text-transform: uppercase; letter-spacing: 10px; pointer-events: none; 
-            width: 100%; text-align: center; 
+            width: 90%; text-align: center;  
         }
 
         /* --- UI HAUTE (MISSION) --- */
@@ -133,12 +141,22 @@
         .m-title { font-size: 14px; text-transform: uppercase; color: #666; font-weight: bold; margin-bottom: 5px; }
         .m-content { font-size: 24px; color: var(--text-dark); font-weight: 800; }
 
+        /* --- ERA INDICATOR --- */
+        .era-indicator { 
+            position: fixed; top: 30px; right: 30px; font-size: 6vw; z-index: 95; font-weight: 900; color: rgba(255, 255, 255, 0.54);text-transform: uppercase; letter-spacing: 10px; pointer-events: none; 
+        }
+
         /* --- UI BASSE (CONTROLS - ZONE MAINS) --- */
+        .top-nav {
+            position: absolute; top: 180px; left: 0; width: 100%;
+            padding: 0 30px; box-sizing: border-box; z-index: 110;
+        }
+
         .bottom-hud {
             position: absolute; bottom: 20px; left: 0; width: 100%;
             height: 100px;
-            display: grid; grid-template-columns: 1fr 120px; /* Nav | Perso */
-            padding: 0 30px; gap: 20px; box-sizing: border-box;
+            display: flex; justify-content: flex-end;
+            padding: 0 30px; box-sizing: border-box;
             align-items: center; z-index: 100;
         }
 
@@ -150,18 +168,18 @@
         }
         .nav-track { flex: 1; height: 100%; border-radius: 32px; position: relative; overflow: hidden; display: flex; }
         
-        .nav-seg { flex: 1; height: 100%; opacity: 0.8; transition: 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.7); font-weight: bold; font-size: 12px; text-transform: uppercase; }
+        .nav-seg { height: 100%; opacity: 0.8; transition: 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.7); font-weight: bold; font-size: 12px; text-transform: uppercase; text-align: center; padding: 0px 10px; }
         .nav-seg:hover { opacity: 1; color: white; }
         
-        .seg-1 { background: var(--c-pre); } 
-        .seg-2 { background: var(--c-ant); } 
-        .seg-3 { background: var(--c-moy); } 
-        .seg-4 { background: var(--c-ren); }
-        .seg-5 { background: var(--c-ind); }
-        .seg-6 { background: var(--c-mod); }
+        .seg-1 { background: var(--c-pre); flex: 12; } /* Préhistoire: 400,000 ans */
+        .seg-2 { background: var(--c-ant); flex: 2; } /* Antiquité: 3,500 ans */
+        .seg-3 { background: var(--c-moy); flex: 2; } /* Moyen-Âge: 1,000 ans */
+        .seg-4 { background: var(--c-ren); flex: 1.4; } /* Renaissance: 300 ans */
+        .seg-5 { background: var(--c-ind); flex: 1.6; } /* Révolution Industrielle: 150 ans */
+        .seg-6 { background: var(--c-mod); flex: 1; } /* Moderne: 80 ans = 1 écran */
 
         .nav-knob {
-            position: absolute; left: 0; top: 0; width: 25%; height: 100%;
+            position: absolute; left: 0; top: 0; width: 16.6%; height: 100%;
             border: 5px solid white; border-radius: 32px; box-sizing: border-box;
             box-shadow: 0 0 0 2000px rgba(0,0,0,0.5); /* Focus visuel */
             cursor: ew-resize; display: flex; justify-content: center; align-items: center;
@@ -232,7 +250,7 @@
         <div id="world-track">
             
             <div class="era-slide slide-1">
-                <div class="era-watermark">PRÉHISTOIRE</div>
+                <!-- <div class="era-watermark">PRÉHISTOIRE</div> -->
                 <div class="bg-stars"></div>
                 <div class="mountain"></div>
                 <div class="cave"></div>
@@ -253,7 +271,7 @@
             </div>
 
             <div class="era-slide slide-2">
-                <div class="era-watermark">ANTIQUITÉ</div>
+                <!-- <div class="era-watermark">ANTIQUITÉ</div> -->
                 <div class="dunes"></div>
                 <div class="prop-group" style="left: 25%;">
                     <div class="prop-emoji">🐪</div>
@@ -273,7 +291,7 @@
             </div>
 
             <div class="era-slide slide-3">
-                <div class="era-watermark">MOYEN-ÂGE</div>
+                <!-- <div class="era-watermark">MOYEN-ÂGE</div> -->
                 <div class="hills"></div>
                 <div class="prop-group" style="left: 40%;">
                     <div class="prop-emoji">🏰</div>
@@ -293,7 +311,7 @@
             </div>
 
             <div class="era-slide slide-4">
-                <div class="era-watermark">RENAISSANCE</div>
+                <!-- a -->
                 <div class="city"></div>
                 <div class="prop-group" style="left: 35%;">
                     <div class="prop-emoji">🎨</div>
@@ -313,7 +331,7 @@
             </div>
 
             <div class="era-slide slide-5">
-                <div class="era-watermark">RÉVOLUTION INDUSTRIELLE</div>
+                <!-- <div class="era-watermark">RÉVOLUTION INDUSTRIELLE</div> -->
                 <div class="city"></div>
                 <div class="prop-group" style="left: 30%;">
                     <div class="prop-emoji">🏭</div>
@@ -333,7 +351,7 @@
             </div>
 
             <div class="era-slide slide-6">
-                <div class="era-watermark">MODERNE</div>
+                <!-- <div class="era-watermark">MODERNE</div> -->
                 <div class="city"></div>
                 <div class="prop-group" style="left: 25%;">
                     <div class="prop-emoji">💻</div>
@@ -356,6 +374,8 @@
         <div id="liko-landed"><img src="images/Liko.png" alt="liko" class="liko-img"></div>
     </div>
 
+    <div class="era-indicator" id="era-name">PRÉHISTOIRE</div>
+
     <div class="top-hud">
         <div class="mission-bubble">
             <span class="m-title">Mission</span>
@@ -363,22 +383,33 @@
         </div>
     </div>
 
-    <div class="bottom-hud">
+    <div class="top-nav">
         <div class="nav-bar" id="nav-container">
             <div class="nav-track">
                 <div class="nav-seg seg-1" onclick="jump(0)">Préhistoire</div>
                 <div class="nav-seg seg-2" onclick="jump(60)">Antiquité</div>
-                <div class="nav-seg seg-3" onclick="jump(50)">Moyen-Âge</div>
-                <div class="nav-seg seg-4" onclick="jump(66.6)">Renaissance</div>
-                <div class="nav-seg seg-5" onclick="jump(83.3)">Révolution Industrielle</div>
-                <div class="nav-seg seg-6" onclick="jump(100)">Moderne</div>
+                <div class="nav-seg seg-3" onclick="jump(70)">Moyen-Âge</div>
+                <div class="nav-seg seg-4" onclick="jump(80)">Renaissance</div>
+                <div class="nav-seg seg-5" onclick="jump(87)">Révolution Industrielle</div>
+                <div class="nav-seg seg-6" onclick="jump(95)">Moderne</div>
                 <div class="nav-knob" id="knob"><span class="grip-lines">|||</span></div>
             </div>
         </div>
+    </div>
 
+    <div class="bottom-hud">
         <div class="char-dock">
             <div class="liko-token" id="liko"><img src="images/Liko.png" alt="liko" class="liko-img"></div>
         </div>
+    </div>
+
+    <div class="era-labels">
+        <div class="era-label label-1">Préhistoire</div>
+        <div class="era-label label-2">Antiquité</div>
+        <div class="era-label label-3">Moyen-Âge</div>
+        <div class="era-label label-4">Renaissance</div>
+        <div class="era-label label-5">Révolution Industrielle</div>
+        <div class="era-label label-6">Moderne</div>
     </div>
 
     <div id="arrow-left" class="arrow-hint">⬅️</div>
@@ -406,6 +437,19 @@
         const arrowL = document.getElementById('arrow-left');
         const arrowR = document.getElementById('arrow-right');
         const victoryScreen = document.getElementById('victory');
+        const navSegments = Array.from(document.querySelectorAll('.nav-seg'));
+        const eraIndicator = document.getElementById('era-name');
+
+        // Flex de base de chaque époque (plus réaliste) et facteur d'agrandissement
+        const eraFlex = [12, 2, 2, 1.4, 1.6, 1];
+        const growthMultiplier = 2.5; // facteur d'agrandissement temporaire
+
+        function applyEraFlex(activeIdx) {
+            navSegments.forEach((seg, i) => {
+                const factor = i === activeIdx ? growthMultiplier : 1;
+                seg.style.flex = eraFlex[i] * factor;
+            });
+        }
 
         let scrollPct = 0;
         let isNav = false;
@@ -414,10 +458,23 @@
         // --- MOTEUR ---
         function update() {
             scrollPct = Math.max(0, Math.min(100, scrollPct));
-            // Le Knob bouge de 0 à 75% (car largeur 25%)
-            knob.style.left = (scrollPct * 0.75) + '%';
-            // Le monde bouge de 0 à -300vw
-            world.style.transform = `translateX(${-(scrollPct / 100) * 300}vw)`;
+
+            // Détecte l'époque courante pour élargir temporairement la zone
+            // Bornes: [0-60[, [60-70[, [70-80[, [80-87[, [87-95[, [95-100]
+            const eraNames = ['PRÉHISTOIRE', 'ANTIQUITÉ', 'MOYEN-ÂGE', 'RENAISSANCE', 'RÉVOLUTION INDUSTRIELLE', 'MODERNE'];
+            let eraIdx = 0;
+            if (scrollPct >= 60 && scrollPct < 70) eraIdx = 1;
+            else if (scrollPct >= 70 && scrollPct < 80) eraIdx = 2;
+            else if (scrollPct >= 80 && scrollPct < 87) eraIdx = 3;
+            else if (scrollPct >= 87 && scrollPct < 95) eraIdx = 4;
+            else if (scrollPct >= 95) eraIdx = 5;
+            
+            eraIndicator.textContent = eraNames[eraIdx];
+            applyEraFlex(eraIdx);
+            // Le Knob bouge de 0 à 83.3% (6 segments de 16.6% chacun)
+            knob.style.left = (scrollPct * 0.833) + '%';
+            // Le monde bouge de 0 à -1900vw (2000% - 100%)
+            world.style.transform = `translateX(${-(scrollPct / 100) * 1900}vw)`;
         }
 
         window.jump = (val) => { scrollPct = val; update(); }
@@ -434,9 +491,11 @@
             e.preventDefault();
             const cx = e.touches ? e.touches[0].clientX : e.clientX;
             const rect = navContainer.getBoundingClientRect();
-            let x = cx - rect.left - (rect.width * 0.125);
-            let pct = (x / rect.width) * 100;
-            scrollPct = pct / 0.75;
+            
+            // Calcul dynamique basé sur la largeur totale actuelle (avec flex)
+            const totalWidth = rect.width;
+            let pct = ((cx - rect.left) / totalWidth) * 100;
+            scrollPct = Math.max(0, Math.min(100, pct));
             update();
         }
 
@@ -471,8 +530,8 @@
             isDrag = false;
             ghost.style.opacity = 0;
 
-            // VICTOIRE : Zone Préhistoire (< 25%)
-            if(scrollPct < 25) {
+            // VICTOIRE : Zone Préhistoire (< 60%)
+            if(scrollPct < 60) {
                 document.querySelector('.top-hud').style.display = 'none'; // Cache Mission
                 document.getElementById('liko-landed').style.display = 'block';
                 document.getElementById('liko-landed').style.left = '15%'; 
@@ -487,8 +546,8 @@
             } else {
                 // ERREUR
                 liko.style.opacity = 1;
-                // Si on est dans le futur (> 25%), montrer flèche gauche
-                if (scrollPct > 25) {
+                // Si on est dans le futur (> 60%), montrer flèche gauche
+                if (scrollPct > 60) {
                     arrowL.style.display = 'flex';
                     setTimeout(() => arrowL.style.display = 'none', 3000);
                 }
