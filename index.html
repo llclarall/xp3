@@ -37,16 +37,17 @@
             z-index: 0; overflow: hidden; 
         }
         #world-track { 
-            display: flex; height: 100%; width: 600%; /* Total flex = 6 (toutes égales) */
+            display: flex; height: 100%; width: 40037.5vw; /* La plus courte époque (~80 ans) couvre ~1 écran */
             will-change: transform; transition: transform 0.1s linear; 
         }
         .era-slide { height: 100%; position: relative; overflow: hidden; }
-        .slide-1 { flex: 1; } /* Préhistoire: -30 000 à -3 000 */
-        .slide-2 { flex: 1; } /* Antiquité: 3,500 ans */
-        .slide-3 { flex: 1; } /* Moyen-Âge: 1,000 ans */
-        .slide-4 { flex: 1; } /* Renaissance: 300 ans */
-        .slide-5 { flex: 1; } /* Révolution Industrielle: 150 ans */
-        .slide-6 { flex: 1; } /* Moderne: 80 ans */
+        /* Proportions basées sur l'époque la plus courte (Moderne ~80 ans) */
+        .slide-1 { flex: 337.5; } /* Préhistoire ~27 000 ans */
+        .slide-2 { flex: 43.75; } /* Antiquité ~3 500 ans */
+        .slide-3 { flex: 12.5; } /* Moyen-Âge ~1 000 ans */
+        .slide-4 { flex: 3.75; } /* Renaissance ~300 ans */
+        .slide-5 { flex: 1.875; } /* Révolution Industrielle ~150 ans */
+        .slide-6 { flex: 1; } /* Moderne ~80 ans (référence) */
 
         /* --- DÉCORS (GARDÉS DE LA VERSION PRÉCÉDENTE) --- */
         .slide-1 { background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364); }
@@ -75,7 +76,7 @@
         .prop-emoji { font-size: 16vh; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); }
         
         .hotspot-btn {
-            position: absolute; top: 0; right: -10px;
+            position: absolute; top: 20px; right: -10px;
             width: 44px; height: 44px; background: white;
             border-radius: 50%; border: 4px solid var(--primary);
             color: var(--text-dark); font-weight: bold; font-size: 24px;
@@ -84,7 +85,7 @@
             animation: pulseBtn 2s infinite;
         }
         .info-bubble {
-            position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%) scale(0);
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) scale(0);
             width: 240px; background: white; padding: 15px; border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.4); text-align: center;
             font-size: 18px; color: #333; pointer-events: none; opacity: 0;
