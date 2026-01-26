@@ -154,48 +154,79 @@
         }
 
         .bottom-hud {
-            position: absolute; left: 150px; top: 290px;
+            position: absolute; left: 200px; top: 290px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             z-index: 100;
         }
 
         .era-button {
-            width: 160px;
-            height: 60px;
-            border-radius: 15px;
-            border: 3px solid white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            width: 180px;
+            height: 65px;
+            border-radius: 18px;
+            border: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3), inset 0 2px 0 rgba(255,255,255,0.3);
             cursor: pointer;
             display: flex;
             flex-direction: row;
             justify-content: flex-start;
             align-items: center;
             color: white;
-            font-weight: bold;
+            font-weight: 900;
             font-size: 13px;
             text-transform: uppercase;
-            transition: all 0.2s;
-            padding: 10px 15px;
-            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            padding: 12px 18px;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
         }
+        
+        /* Effet de brillance */
+        .era-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .era-button:hover::before {
+            left: 100%;
+        }
+        
         .era-button:hover {
-            transform: translateX(10px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            transform: translateX(15px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.4);
         }
+        
         .era-button:active {
-            transform: translateX(5px) scale(0.98);
+            transform: translateX(10px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4), inset 0 2px 0 rgba(255,255,255,0.2);
         }
+        
         .era-button .era-emoji {
-            font-size: 24px;
+            font-size: 28px;
             flex-shrink: 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: transform 0.3s;
         }
+        
+        .era-button:hover .era-emoji {
+            transform: scale(1.2) rotate(5deg);
+        }
+        
         .era-button .era-label {
-            font-size: 11px;
+            font-size: 12px;
             text-align: left;
-            line-height: 1.2;
+            line-height: 1.3;
             flex: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .btn-pre { background: var(--c-pre); }
