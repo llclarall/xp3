@@ -672,9 +672,9 @@ window.toggleInfo = (btn) => {
 // --- 1. NAVIGATION : SWIPE DU MONDE (NOUVEAU) ---
 gameViewport.addEventListener('mousedown', (e) => {
     // On ne lance pas le swipe si on clique sur l'UI, le perso ou un bouton
+    // IMPORTANT : Si isDrag est déjà true, ne pas lancer worldDrag
     if (e.target.closest('.era-button') || 
         e.target.closest('.char-dock') ||
-        e.target.closest('.liko-token') || 
         e.target.closest('.hotspot-btn') ||
         isDrag) return;
 
@@ -720,17 +720,24 @@ window.addEventListener('mouseup', () => {
 
 // --- 2. GAMEPLAY : DRAG LIKO ---
 function dragStart(e) {
-    e.stopPropagation(); // Empêcher le worldDrag de se déclencher
+    // Empêcher tout comportement par défaut et la propagation
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Marquer comme drag en cours
     isDrag = true;
+    
+    // Afficher le fantôme et cacher le vrai Liko
     ghost.style.opacity = 1;
     liko.style.opacity = 0;
     
-    // Position initiale du fantôme
-    const cx = e.touches ? e.touches[0].clientX : e.clientX;
-    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    // Position initiale du fantôme (suivre immédiatement la souris)
+    const cx = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+    const cy = e.clientY || (e.touches ? e.touches[0].clientY : 0);
     ghost.style.left = (cx - 50) + 'px';
     ghost.style.top = (cy - 50) + 'px';
 
+    // Cacher les flèches d'aide
     arrowL.style.display = 'none';
     arrowR.style.display = 'none';
 }
@@ -739,8 +746,9 @@ function dragEnd() {
     if(!isDrag) return;
     isDrag = false;
     ghost.style.opacity = 0;
+    liko.style.opacity = 1; // Toujours réafficher Liko après le drag
 
-    // VICTOIRE : Zone Préhistoire (début de l'époque 1 = Antiquité)
+    // VICTOIRE : Zone Préhistoire (avant l'époque 1 = Antiquité)
     if(scrollPct < eraStartPositions[1]) {
         document.querySelector('.top-hud').style.display = 'none';
         const landed = document.getElementById('liko-landed');
@@ -755,8 +763,7 @@ function dragEnd() {
             }, 50);
         }, 800);
     } else {
-        // ÉCHEC
-        liko.style.opacity = 1;
+        // ÉCHEC - Afficher une flèche d'aide mais garder Liko prêt pour un autre drag
         if (scrollPct > eraStartPositions[1]) {
             arrowL.style.display = 'flex';
             setTimeout(() => arrowL.style.display = 'none', 3000);
