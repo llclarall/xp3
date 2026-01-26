@@ -144,7 +144,7 @@
 
         /* --- ERA INDICATOR --- */
         .era-indicator { 
-            position: fixed; top: 30px; right: 30px; font-size: 6vw; z-index: 95; font-weight: 900; color: rgba(255, 255, 255, 0.54);text-transform: uppercase; letter-spacing: 10px; pointer-events: none; 
+            position: fixed; top: 30px; right: 30px; font-size: 4.2vw; z-index: 95; font-weight: 900; color: rgba(255, 255, 255, 0.54);text-transform: uppercase; letter-spacing: 10px; pointer-events: none; 
         }
 
         /* --- UI BASSE (CONTROLS - ZONE MAINS) --- */
@@ -154,30 +154,56 @@
         }
 
         .bottom-hud {
-            position: absolute; bottom: 20px; left: 0; width: 100%;
-            height: 100px;
-            display: flex; justify-content: flex-end;
-            padding: 0 30px; box-sizing: border-box;
-            align-items: center; z-index: 100;
+            position: absolute; left: 150px; top: 290px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
         }
 
-        .nav-bar {
-            height: 80px; background: white; border-radius: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            padding: 8px; display: flex; align-items: center;
-            border: 4px solid rgba(255,255,255,0.5);
+        .era-button {
+            width: 160px;
+            height: 60px;
+            border-radius: 15px;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 13px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            padding: 10px 15px;
+            gap: 12px;
         }
-        .nav-track { flex: 1; height: 100%; border-radius: 32px; position: relative; overflow: hidden; display: flex; }
+        .era-button:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+        .era-button:active {
+            transform: translateX(5px) scale(0.98);
+        }
+        .era-button .era-emoji {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .era-button .era-label {
+            font-size: 11px;
+            text-align: left;
+            line-height: 1.2;
+            flex: 1;
+        }
         
-        .nav-seg { height: 100%; opacity: 0.8; transition: 0.2s; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; color: rgba(255,255,255,0.7); font-weight: bold; font-size: 12px; text-transform: uppercase; text-align: center; padding: 0px 15px; }
-        .nav-seg:hover { opacity: 1; color: white; }
-        
-        .seg-1 { background: var(--c-pre); flex: 1; } /* Préhistoire: -30 000 à -3 000 */
-        .seg-2 { background: var(--c-ant); flex: 1; } /* Antiquité: 3,500 ans */
-        .seg-3 { background: var(--c-moy); flex: 1; } /* Moyen-Âge: 1,000 ans */
-        .seg-4 { background: var(--c-ren); flex: 1; } /* Renaissance: 300 ans */
-        .seg-5 { background: var(--c-ind); flex: 1; } /* Révolution Industrielle: 150 ans */
-        .seg-6 { background: var(--c-mod); flex: 1; } /* Moderne: 80 ans */
+        .btn-pre { background: var(--c-pre); }
+        .btn-ant { background: var(--c-ant); }
+        .btn-moy { background: var(--c-moy); }
+        .btn-ren { background: var(--c-ren); }
+        .btn-ind { background: var(--c-ind); }
+        .btn-mod { background: var(--c-mod); }
 
         /* --- FRISE STATIQUE À L'ÉCHELLE --- */
         .static-scale { position: absolute; left: 30px; right: 30px; top: 150px; z-index: 120; pointer-events: none; }
@@ -199,31 +225,25 @@
         .scale-legend { display: flex; justify-content: space-between; color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 6px; }
         .scale-note { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 4px; }
 
-        /* CURSEUR ADAPTATIF */
-.nav-knob {
-    position: absolute; left: 0; top: 0; height: 100%;
-    /* La largeur sera pilotée par le JS, on met une valeur par défaut */
-    width: 16.66%; 
-    border: 5px solid white; border-radius: 32px; box-sizing: border-box;
-    box-shadow: 0 0 0 2000px rgba(0,0,0,0.5); /* Focus visuel qui assombrit le reste */
-    cursor: ew-resize; display: flex; justify-content: center; align-items: center;
-    /* Animation fluide quand la largeur change */
-    transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
-}
-        .grip-lines { color: white; font-weight: 900; font-size: 24px; letter-spacing: -2px; }
+
 
         /* Le Dock du Personnage */
         .char-dock {
-            width: 100px; height: 100px;
+            position: absolute;
+            top: 300px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 170px; height: 170px;
             background: rgba(255,255,255,0.3); backdrop-filter: blur(5px);
             border-radius: 50%; border: 3px dashed rgba(255,255,255,0.6);
             display: flex; justify-content: center; align-items: center;
+            z-index: 100;
         }
         .liko-token {
-            width: 90px; height: 90px; background: var(--primary);
+            width: 170px; height: 170px; background: var(--primary);
             border: 5px solid white; border-radius: 50%;
             display: flex; justify-content: center; align-items: center;
-            font-size: 55px; cursor: grab;
+            font-size: 60px; cursor: grab;
             box-shadow: 0 10px 20px rgba(0,0,0,0.4);
             animation: bounce 3s infinite;
         }
@@ -409,18 +429,37 @@
         </div>
     </div>
 
-    <div class="top-nav">
-        <div class="nav-bar" id="nav-container">
-            <div class="nav-track">
-                <div class="nav-seg seg-1" onclick="jump(0)">Préhistoire</div>
-                <div class="nav-seg seg-2" onclick="jump(16.67)">Antiquité</div>
-                <div class="nav-seg seg-3" onclick="jump(33.33)">Moyen-Âge</div>
-                <div class="nav-seg seg-4" onclick="jump(50)">Renaissance</div>
-                <div class="nav-seg seg-5" onclick="jump(66.67)">Révolution Industrielle</div>
-                <div class="nav-seg seg-6" onclick="jump(83.33)">Moderne</div>
-                <div class="nav-knob" id="knob"><span class="grip-lines">|||</span></div>
-            </div>
-        </div>
+    <!-- Boutons d'époques à gauche -->
+    <div class="bottom-hud">
+        <button class="era-button btn-pre" onclick="jumpToEra(0)">
+            <div class="era-emoji">🦉</div>
+            <div class="era-label">Préhistoire</div>
+        </button>
+        <button class="era-button btn-ant" onclick="jumpToEra(1)">
+            <div class="era-emoji">🏛️</div>
+            <div class="era-label">Antiquité</div>
+        </button>
+        <button class="era-button btn-moy" onclick="jumpToEra(2)">
+            <div class="era-emoji">🏰</div>
+            <div class="era-label">Moyen-Âge</div>
+        </button>
+        <button class="era-button btn-ren" onclick="jumpToEra(3)">
+            <div class="era-emoji">🎨</div>
+            <div class="era-label">Renaissance</div>
+        </button>
+        <button class="era-button btn-ind" onclick="jumpToEra(4)">
+            <div class="era-emoji">⚙️</div>
+            <div class="era-label">Rév. Industrielle</div>
+        </button>
+        <button class="era-button btn-mod" onclick="jumpToEra(5)">
+            <div class="era-emoji">💻</div>
+            <div class="era-label">Moderne</div>
+        </button>
+    </div>
+
+    <!-- Personnage Liko en bas à droite -->
+    <div class="char-dock">
+        <div class="liko-token" id="liko"><img src="images/Liko.png" alt="liko" class="liko-img"></div>
     </div>
 
     <div class="static-scale">
@@ -445,12 +484,6 @@
                 <span>1945</span>
                 <span>2024</span>
             </div>
-        </div>
-    </div>
-
-    <div class="bottom-hud">
-        <div class="char-dock">
-            <div class="liko-token" id="liko"><img src="images/Liko.png" alt="liko" class="liko-img"></div>
         </div>
     </div>
 
@@ -483,14 +516,11 @@
         // --- RÉFÉRENCES DOM ---
 const gameViewport = document.getElementById('game-viewport'); // L'écran de jeu
 const world = document.getElementById('world-track');
-const knob = document.getElementById('knob');
-const navContainer = document.getElementById('nav-container');
 const liko = document.getElementById('liko');
 const ghost = document.getElementById('ghost');
 const arrowL = document.getElementById('arrow-left');
 const arrowR = document.getElementById('arrow-right');
 const victoryScreen = document.getElementById('victory');
-const navSegments = Array.from(document.querySelectorAll('.nav-seg'));
 const eraIndicator = document.getElementById('era-name');
 
 // Éléments de la frise statique
@@ -503,43 +533,93 @@ const timelineStart = -30000;
 const timelineEnd = 2024;
 const timelineRange = timelineEnd - timelineStart;
 
-// Mapping Frise Interactive -> Frise Statique (Proportions réalistes)
-// 6 époques interactives égales (16.66% chacune) mappées vers des durées réelles inégales
-const staticFlex = [27, 3.5, 1, 0.3, 0.15, 0.08]; 
-const staticTotal = staticFlex.reduce((a, b) => a + b, 0);
+// Proportions flex des époques (basées sur leurs durées réelles)
+const eraFlexValues = [337.5, 43.75, 12.5, 3.75, 1.875, 1];
+const totalFlex = eraFlexValues.reduce((a, b) => a + b, 0);
+
+// Le monde total fait 40037.5vw, le viewport fait 100vw
+const worldTotalVW = 40037.5;
+const viewportVW = 100;
+const worldSpanVW = worldTotalVW - viewportVW; // portion translatable du track
+
+// Calcul des positions de début de chaque époque en VW
+const eraStartVW = [0];
+let cumulVW = 0;
+for (let i = 0; i < eraFlexValues.length - 1; i++) {
+    cumulVW += (eraFlexValues[i] / totalFlex) * worldTotalVW;
+    eraStartVW.push(cumulVW);
+}
+
+// Conversion en pourcentages de scroll (0-100%)
+// Pour afficher une époque, on veut son début au bord gauche du viewport
+// translateX = -(scrollPct / 100) * worldSpanVW
+// Donc scrollPct = (translateX / worldSpanVW) * 100
+const eraStartPositions = eraStartVW.map(vw => (vw / worldSpanVW) * 100);
+
+// Calcul des positions finales de chaque époque
+const eraEndPositions = eraStartPositions.map((pos, i) => 
+    i < eraStartPositions.length - 1 ? eraStartPositions[i + 1] : 100
+);
+
+// Les seuils statiques doivent correspondre aux MÊMES proportions que les époques
+// Ainsi le curseur se synchronise correctement
 const staticThresholds = [0];
-let cumul = 0;
-for (let i = 0; i < staticFlex.length; i++) {
-    cumul += (staticFlex[i] / staticTotal) * 100;
-    staticThresholds.push(cumul);
+let staticCumul = 0;
+for (let i = 0; i < eraFlexValues.length; i++) {
+    staticCumul += (eraFlexValues[i] / totalFlex) * 100;
+    staticThresholds.push(staticCumul);
 }
 
 function mapToStaticScale(scrollPct) {
-    const interactiveBounds = [0, 16.67, 33.33, 50, 66.67, 83.33, 100];
+    // Puisque les seuils statiques utilisent les mêmes proportions que les époques du monde,
+    // on peut mapper directement scrollPct aux seuils statiques
+    
     let eraIdx = 0;
-    for (let i = 0; i < interactiveBounds.length - 1; i++) {
-        if (scrollPct >= interactiveBounds[i] && scrollPct < interactiveBounds[i + 1]) {
+    for (let i = 0; i < eraStartPositions.length; i++) {
+        if (scrollPct >= eraStartPositions[i] && scrollPct < eraEndPositions[i]) {
             eraIdx = i;
             break;
         }
     }
-    if (scrollPct >= 83.33) eraIdx = 5;
     
-    const eraStart = interactiveBounds[eraIdx];
-    const eraEnd = interactiveBounds[eraIdx + 1];
-    const relativePos = (scrollPct - eraStart) / (eraEnd - eraStart);
+    // Position relative dans l'époque actuelle (0 à 1)
+    const eraStart = eraStartPositions[eraIdx];
+    const eraEnd = eraEndPositions[eraIdx];
+    const eraWidth = eraEnd - eraStart;
+    const relativePos = eraWidth > 0 ? (scrollPct - eraStart) / eraWidth : 0;
     
+    // Mapper à la position sur la frise statique (qui a les mêmes proportions)
     const staticStart = staticThresholds[eraIdx];
-    const staticEnd = staticThresholds[eraIdx + 1];
+    const staticEnd = staticThresholds[eraIdx + 1] || 100;
     return staticStart + relativePos * (staticEnd - staticStart);
 }
 
 // --- ÉTATS ---
 let scrollPct = 0;
-let isNav = false;      // Navigation via la barre du bas
 let isDrag = false;     // Drag & Drop de Liko
 let isWorldDrag = false; // Drag du Monde (Swipe)
 let lastMouseX = 0;     // Pour calculer le delta du swipe
+
+// Fonction pour obtenir la sensibilité en fonction de l'époque actuelle
+function getScrollSensitivity(scrollPct) {
+    // Déterminer l'époque actuelle
+    let eraIdx = 0;
+    for (let i = 0; i < eraStartPositions.length; i++) {
+        if (scrollPct >= eraStartPositions[i] && scrollPct < eraEndPositions[i]) {
+            eraIdx = i;
+            break;
+        }
+    }
+    
+    // La sensibilité est proportionnelle à la largeur de l'époque
+    // Plus l'époque est large (préhistoire), plus on scrolle vite
+    const eraWidth = eraEndPositions[eraIdx] - eraStartPositions[eraIdx];
+    
+    // Facteur de base : une largeur d'écran = X% de scroll
+    // On multiplie par eraWidth pour adapter : époque large = scroll rapide
+    const baseSensitivity = 20; // valeur de référence
+    return baseSensitivity * (eraWidth / 10); // Ajuster le diviseur pour contrôler l'intensité
+}
 
 // --- MOTEUR PRINCIPAL ---
 function update() {
@@ -548,17 +628,20 @@ function update() {
     // 1. Mise à jour du nom de l'époque
     const eraNames = ['PRÉHISTOIRE', 'ANTIQUITÉ', 'MOYEN-ÂGE', 'RENAISSANCE', 'RÉVOLUTION INDUSTRIELLE', 'MODERNE'];
     let eraIdx = 0;
-    if (scrollPct >= 16.67 && scrollPct < 33.33) eraIdx = 1;
-    else if (scrollPct >= 33.33 && scrollPct < 50) eraIdx = 2;
-    else if (scrollPct >= 50 && scrollPct < 66.67) eraIdx = 3;
-    else if (scrollPct >= 66.67 && scrollPct < 83.33) eraIdx = 4;
-    else if (scrollPct >= 83.33) eraIdx = 5;
+    for (let i = 0; i < eraStartPositions.length - 1; i++) {
+        if (scrollPct >= eraStartPositions[i] && scrollPct < eraStartPositions[i + 1]) {
+            eraIdx = i;
+            break;
+        }
+    }
+    if (scrollPct >= eraStartPositions[eraStartPositions.length - 1]) {
+        eraIdx = eraStartPositions.length - 1;
+    }
     
     if(eraIndicator) eraIndicator.textContent = eraNames[eraIdx];
 
-    // 2. Déplacement visuel
-    knob.style.left = (scrollPct * 0.833) + '%';
-    world.style.transform = `translateX(${-(scrollPct / 100) * 500}vw)`;
+    // 2. Déplacement visuel du monde
+    world.style.transform = `translateX(${-(scrollPct / 100) * worldSpanVW}vw)`;
     
     // 3. Mise à jour frise statique
     const staticPct = mapToStaticScale(scrollPct);
@@ -570,7 +653,13 @@ function update() {
     }
 }
 
-// Saut via clic sur la barre de navigation
+// Saut vers une époque spécifique (0-5)
+window.jumpToEra = (eraIndex) => { 
+    scrollPct = eraStartPositions[eraIndex]; 
+    update(); 
+}
+
+// Saut direct (pour compatibilité)
 window.jump = (val) => { scrollPct = val; update(); }
 
 // Gestion des bulles d'info
@@ -583,10 +672,11 @@ window.toggleInfo = (btn) => {
 // --- 1. NAVIGATION : SWIPE DU MONDE (NOUVEAU) ---
 gameViewport.addEventListener('mousedown', (e) => {
     // On ne lance pas le swipe si on clique sur l'UI, le perso ou un bouton
-    if (e.target.closest('.nav-bar') || 
+    if (e.target.closest('.era-button') || 
+        e.target.closest('.char-dock') ||
         e.target.closest('.liko-token') || 
         e.target.closest('.hotspot-btn') ||
-        isNav || isDrag) return;
+        isDrag) return;
 
     isWorldDrag = true;
     lastMouseX = e.clientX;
@@ -599,25 +689,17 @@ window.addEventListener('mousemove', (e) => {
         e.preventDefault();
         const delta = e.clientX - lastMouseX;
         
-        // Sensibilité : Déplacer la souris d'une largeur d'écran = 20% de scroll (1 époque)
-        // Signe négatif car tirer à gauche (delta < 0) = avancer à droite (scroll +)
-        const pctChange = -(delta / window.innerWidth) * 20;
+        // Sensibilité adaptative : ajustée en fonction de la taille de l'époque actuelle
+        // Préhistoire (large) = scroll rapide, Moderne (petite) = scroll lent
+        const sensitivity = getScrollSensitivity(scrollPct);
+        const pctChange = -(delta / window.innerWidth) * sensitivity;
         
         scrollPct += pctChange;
         lastMouseX = e.clientX;
         update();
     }
-    
-    // Logique Drag Nav Bar (existante)
-    if (isNav) {
-        e.preventDefault();
-        const rect = navContainer.getBoundingClientRect();
-        let pct = ((e.clientX - rect.left) / rect.width) * 100;
-        scrollPct = Math.max(0, Math.min(100, pct));
-        update();
-    }
 
-    // Logique Drag Liko (existante)
+    // Logique Drag Liko
     if (isDrag) {
         e.preventDefault();
         ghost.style.left = (e.clientX - 50) + 'px';
@@ -630,29 +712,15 @@ window.addEventListener('mouseup', () => {
         isWorldDrag = false;
         gameViewport.style.cursor = 'default';
     }
-    isNav = false;
-    // Note : Le dragEnd de Liko est géré séparément ci-dessous
+    if (isDrag) {
+        dragEnd();
+    }
 });
 
 
-// --- 2. NAVIGATION : BARRE DU BAS ---
-// Géré via le mousemove global, juste l'initiation ici
-knob.addEventListener('mousedown', () => isNav = true);
-knob.addEventListener('touchstart', () => isNav = true);
-
-// Support tactile pour la Nav
-navContainer.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    const touch = e.touches[0];
-    const rect = navContainer.getBoundingClientRect();
-    let pct = ((touch.clientX - rect.left) / rect.width) * 100;
-    scrollPct = Math.max(0, Math.min(100, pct));
-    update();
-}, {passive: false});
-
-
-// --- 3. GAMEPLAY : DRAG LIKO ---
+// --- 2. GAMEPLAY : DRAG LIKO ---
 function dragStart(e) {
+    e.stopPropagation(); // Empêcher le worldDrag de se déclencher
     isDrag = true;
     ghost.style.opacity = 1;
     liko.style.opacity = 0;
@@ -672,8 +740,8 @@ function dragEnd() {
     isDrag = false;
     ghost.style.opacity = 0;
 
-    // VICTOIRE : Zone Préhistoire (< 16.67%)
-    if(scrollPct < 16.67) {
+    // VICTOIRE : Zone Préhistoire (début de l'époque 1 = Antiquité)
+    if(scrollPct < eraStartPositions[1]) {
         document.querySelector('.top-hud').style.display = 'none';
         const landed = document.getElementById('liko-landed');
         landed.style.display = 'block';
@@ -689,7 +757,7 @@ function dragEnd() {
     } else {
         // ÉCHEC
         liko.style.opacity = 1;
-        if (scrollPct > 16.67) {
+        if (scrollPct > eraStartPositions[1]) {
             arrowL.style.display = 'flex';
             setTimeout(() => arrowL.style.display = 'none', 3000);
         }
