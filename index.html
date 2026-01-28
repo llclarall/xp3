@@ -255,6 +255,34 @@
         .scale-cursor { position: absolute; top: 50%; left: 0%; transform: translateX(-50%) translateY(-50%); font-size: 26px; pointer-events: none; transition: left 0.1s linear; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4)); z-index: 10; }
         .scale-legend { display: flex; justify-content: space-between; color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 6px; }
         .scale-note { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 4px; }
+        
+        /* Vignettes de personnages sur la frise */
+        .character-marker {
+            position: absolute;
+            bottom: -5px;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 3px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transform: translateX(-50%);
+            z-index: 15;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .character-marker img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        @keyframes popIn {
+            0% { transform: translateX(-50%) scale(0); opacity: 0; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
 
 
 
@@ -346,7 +374,7 @@
                 <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">-30 000</div>
-                        <div class="marker-sub" style="left: 50%;"><span>-15 000</span></div>
+                        <div class="marker-sub" style="left: 50%;"><span>-10 000</span></div>
                         <div class="marker-sub" style="left: 90%;"><span>-3 000</span></div>
                     </div>
                 </div>
@@ -367,7 +395,7 @@
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">-3 000</div>
                         <div class="marker-sub" style="left: 40%;"><span>-753</span></div>
-                        <div class="marker-sub" style="left: 80%;"><span>-52</span></div>
+                        <div class="marker-sub" style="left: 80%;"><span>476</span></div>
                     </div>
                 </div>
             </div>
@@ -406,7 +434,7 @@
                 <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">1492</div>
-                        <div class="marker-sub" style="left: 50%;"><span>1500</span></div>
+                        <div class="marker-sub" style="left: 50%;"><span>1515</span></div>
                         <div class="marker-sub" style="left: 90%;"><span>1789</span></div>
                     </div>
                 </div>
@@ -427,7 +455,7 @@
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">1789</div>
                         <div class="marker-sub" style="left: 60%;"><span>1850</span></div>
-                        <div class="marker-sub" style="left: 90%;"><span>1945</span></div>
+                        <div class="marker-sub" style="left: 90%;"><span>1914</span></div>
                     </div>
                 </div>
             </div>
@@ -446,8 +474,8 @@
                 <div class="ground">
                     <div class="timeline-markers">
                         <div class="marker-main" style="left: 20px;">1945</div>
-                        <div class="marker-sub" style="left: 50%;"><span>1990</span></div>
-                        <div class="marker-sub" style="left: 85%;"><span>2024</span></div>
+                        <div class="marker-sub" style="left: 50%;"><span>1989</span></div>
+                        <div class="marker-sub" style="left: 85%;"><span>2026</span></div>
                     </div>
                 </div>
             </div>
@@ -504,8 +532,8 @@
             <div class="scale-bar">
                 <div class="scale-pointer" id="scale-pointer"><div class="scale-pointer-label" id="scale-year-label">-30 000</div></div>
                 <div class="scale-cursor" id="scale-cursor">📍</div>
-                <div class="scale-seg scale-pre" style="flex: 27;"><!-- <span>Préhistoire</span><small>27 000 ans</small> --></div>
-                <div class="scale-seg scale-ant" style="flex: 3.5;"><!-- <span>Antiquité</span><small>3 500 ans</small> --></div>
+                <div class="scale-seg scale-pre" style="flex: 28;"><!-- <span>Préhistoire</span><small>27 000 ans</small> --></div>
+                <div class="scale-seg scale-ant" style="flex: 3.7;"><!-- <span>Antiquité</span><small>3 500 ans</small> --></div>
                 <div class="scale-seg scale-moy" style="flex: 1;"><!-- <span>Moyen-Âge</span><small>1 000 ans</small> --></div>
                 <div class="scale-seg scale-ren" style="flex: 0.3;"><!-- <span>Renaissance</span><small>300 ans</small> --></div>
                 <div class="scale-seg scale-ind" style="flex: 0.15;"><!-- <span>Révolution Ind.</span><small>150 ans</small> --></div>
@@ -513,12 +541,14 @@
             </div>
             <div class="scale-legend">
                 <span>-30 000</span>
-                <span>-3 000</span>
-                <span>476</span>
-                <span>1492</span>
-                <span>1789</span>
-                <span>1945</span>
-                <span>2024</span>
+                <span>-26 000</span>
+                <span>-22 000</span>
+                <span>-18 000</span>
+                <span>-14 000</span>
+                <span>-10 000</span>
+                <span>-6 000</span>
+                <span>-2 000</span>
+                <span>2026</span>
             </div>
         </div>
     </div>
@@ -544,7 +574,7 @@
                 <div style="font-size: 150px; position:absolute; right:0; transform:rotate(10deg);">✌️<img src="images/Liko.png" alt="liko"></div>
             </div>
             <div class="polaroid-caption">Souvenir de -30 000 !</div>
-            <button onclick="location.reload()" style="margin-top: 30px; font-size: 24px; padding: 15px 40px; border-radius: 50px; border: 3px solid #333; background: #FFD700; cursor: pointer; font-weight: 900; box-shadow: 5px 5px 0 #333;">REJOUER</button>
+            <button onclick="restartGame()" style="margin-top: 30px; font-size: 24px; padding: 15px 40px; border-radius: 50px; border: 3px solid #333; background: #FFD700; cursor: pointer; font-weight: 900; box-shadow: 5px 5px 0 #333;">REJOUER</button>
         </div>
     </div>
 
@@ -566,7 +596,7 @@ const scaleYearLabel = document.getElementById('scale-year-label');
 
 // --- CALCULS TEMPORELS ---
 const timelineStart = -30000;
-const timelineEnd = 2024;
+const timelineEnd = 2026;
 const timelineRange = timelineEnd - timelineStart;
 
 // Proportions flex des époques (basées sur leurs durées réelles)
@@ -791,6 +821,15 @@ function dragEnd() {
         landed.style.display = 'block';
         landed.style.left = '30%'; 
         
+        // Ajouter une vignette sur la frise statique
+        const staticPct = mapToStaticScale(scrollPct);
+        const scaleBar = document.querySelector('.scale-bar');
+        const marker = document.createElement('div');
+        marker.className = 'character-marker';
+        marker.innerHTML = '<img src="images/Liko.png" alt="Liko">';
+        marker.style.left = staticPct + '%';
+        scaleBar.appendChild(marker);
+        
         setTimeout(() => {
             victoryScreen.style.display = 'flex';
             setTimeout(() => {
@@ -800,9 +839,9 @@ function dragEnd() {
         }, 800);
     } else {
         // ÉCHEC - Afficher une flèche d'aide mais garder Liko prêt pour un autre drag
-        if (scrollPct > eraStartPositions[1]) {
+        if (scrollPct >= eraStartPositions[1]) {
             arrowL.style.display = 'flex';
-            setTimeout(() => arrowL.style.display = 'none', 3000);
+            setTimeout(() => arrowL.style.display = 'none', 15000);
         }
     }
 }
@@ -823,6 +862,31 @@ window.addEventListener('touchmove', (e) => {
 window.addEventListener('touchend', dragEnd);
 // Le mouseup global gère la fin du drag souris pour Liko si on ajoute ceci :
 window.addEventListener('mouseup', dragEnd);
+
+// Fonction pour redémarrer le jeu sans recharger la page (garde les vignettes)
+function restartGame() {
+    // Réinitialiser l'état du jeu
+    scrollPct = 0;
+    isDrag = false;
+    isWorldDrag = false;
+    
+    // Cacher l'écran de victoire
+    victoryScreen.style.opacity = '0';
+    setTimeout(() => {
+        victoryScreen.style.display = 'none';
+    }, 500);
+    
+    // Réafficher l'UI de mission
+    document.querySelector('.top-hud').style.display = 'block';
+    
+    // Remettre Liko dans son dock
+    liko.style.opacity = 1;
+    const likoLanded = document.getElementById('liko-landed');
+    likoLanded.style.display = 'none';
+    
+    // Remettre la vue au début
+    update();
+}
 
 // Lancement
 update();
