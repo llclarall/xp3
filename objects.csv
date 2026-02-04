@@ -1,0 +1,44 @@
+Date,Era,Position_Left,Object_Emoji,Object_Image,Object_Name,Has_Info,Info_Text
+-30000,Prehistory,8%,🌲,,Tree,false,
+-30000,Prehistory,15%,🪨,,Rock,false,
+-30000,Prehistory,22%,🦴,,Bone,false,
+-28000,Prehistory,30%,🪵,,Wood,true,Le bois servait à fabriquer des outils et des armes pour la chasse.
+-25000,Prehistory,38%,🌲,,Tree,false,
+-20000,Prehistory,45%,🔥,,Fire,true,Le feu protégeait les hommes des bêtes sauvages et permettait de cuire les aliments.
+-16000,Prehistory,52%,🪨,,Rock,false,
+-12000,Prehistory,60%,🦣,,Mammoth,true,Les mammouths pesaient jusqu'à 6 tonnes et ont disparu il y a 10 000 ans.
+-8000,Prehistory,68%,🌲,,Tree,false,
+-5000,Prehistory,76%,🦴,,Bone,true,Les os d'animaux servaient à fabriquer des aiguilles et des bijoux.
+-3000,Antiquity,8%,🏺,,Vase,false,
+-2700,Antiquity,15%,🌴,,Palm Tree,false,
+-1500,Antiquity,25%,🐪,images/camel.png,Camel,true,Les chameaux pouvaient parcourir 160 km par jour dans le désert sans boire.
+-1000,Antiquity,30%,⚱️,,Amphora,false,
+-500,Antiquity,38%,📜,,Scroll,true,Les rouleaux de papyrus permettaient de conserver le savoir.
+-100,Antiquity,45%,🌴,,Palm Tree,false,
+200,Antiquity,55%,🏺,,Vase,false,
+350,Antiquity,62%,🗿,,Statue,false,
+400,Antiquity,65%,🏛️,,Coliseum,true,Le Colisée de Rome pouvait accueillir 50 000 personnes !
+460,Antiquity,70%,🐪,,Camel,false,
+476,Middle Ages,15%,🌳,,Tree,false,
+600,Middle Ages,30%,⚔️,,Sword,false,
+800,Middle Ages,40%,🏰,,Castle,true,Les ponts-levis servaient à fermer l'entrée du château.
+1000,Middle Ages,55%,🌳,,Tree,false,
+1200,Middle Ages,70%,🏇,,Knight,true,Les chevaliers portaient une armure de 25 kg et s'entraînaient dès l'enfance.
+1400,Middle Ages,80%,🛡️,,Shield,false,
+1450,Middle Ages,90%,🌳,,Tree,false,
+1492,Renaissance,15%,📖,,Book,true,L'imprimerie de Gutenberg a permis de produire des livres en masse.
+1520,Renaissance,35%,🎨,,Art Palette,false,
+1600,Renaissance,50%,🔭,,Telescope,true,Galilée a découvert les lunes de Jupiter avec son télescope en 1610.
+1680,Renaissance,65%,🎻,,Violin,false,
+1750,Renaissance,75%,⛪,,Church,false,
+1770,Renaissance,85%,🎭,,Theater,false,
+1789,Industrial Revolution,15%,⚙️,,Gear,false,
+1810,Industrial Revolution,30%,🏭,,Factory,true,La machine à vapeur a révolutionné la production.
+1850,Industrial Revolution,50%,🔩,,Bolt,false,
+1880,Industrial Revolution,70%,🚂,,Train,true,Le premier train à vapeur atteignait 45 km/h en 1825.
+1920,Industrial Revolution,92%,⚙️,,Gear,false,
+1945,Modern,12%,📱,,Smartphone,false,
+1970,Modern,25%,🚀,,Rocket,true,Neil Armstrong a marché sur la Lune en 1969 grâce à la fusée Saturn V.
+1990,Modern,50%,💻,,Computer,false,
+2005,Modern,80%,🏬,,Buildings,false,
+2015,Modern,90%,📱,,Mobile Phone,false,

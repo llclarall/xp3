@@ -1,0 +1,96 @@
+Date,Era,Milestone_Title,Importance
+-30000,Prehistory,Début de la Préhistoire,main
+-29700,Prehistory,Art Parietal,sub
+-28900,Prehistory,Paléolithique supérieur,sub
+-28100,Prehistory,Développement des outils,sub
+-27300,Prehistory,Chasseurs-cueilleurs,sub
+-26500,Prehistory,Art mobilier,sub
+-25700,Prehistory,Expansion humaine,sub
+-24900,Prehistory,Grottes ornées,sub
+-24100,Prehistory,Industrie lithique,sub
+-23300,Prehistory,Chasse au mammouth,sub
+-22500,Prehistory,Vie en groupe,sub
+-21700,Prehistory,Maîtrise du feu,sub
+-20900,Prehistory,Vêtements,sub
+-20100,Prehistory,Art rupestre,sub
+-20000,Prehistory,Apogée artistique,sub
+-19300,Prehistory,Rites funéraires,sub
+-18500,Prehistory,Commerce primitif,sub
+-17700,Prehistory,Amélioration habitat,sub
+-16900,Prehistory,Outils spécialisés,sub
+-16100,Prehistory,Vie communautaire,sub
+-15300,Prehistory,Chasse organisée,sub
+-14500,Prehistory,Art mobilier,sub
+-13700,Prehistory,Dernière glaciation,sub
+-12900,Prehistory,Fin du Paléolithique,sub
+-12100,Prehistory,Mésolithique,sub
+-11300,Prehistory,Domestication animale,sub
+-10500,Prehistory,Proto-agriculture,sub
+-10000,Prehistory,Néolithique,sub
+-9700,Prehistory,Villages permanents,sub
+-8900,Prehistory,Poterie,sub
+-8100,Prehistory,Tissage,sub
+-7300,Prehistory,Métallurgie du cuivre,sub
+-6500,Prehistory,Élevage,sub
+-5700,Prehistory,Mégalithes,sub
+-4900,Prehistory,Âge du bronze,sub
+-4100,Prehistory,Civilisations,sub
+-3000,Antiquity,Début de l'Antiquité,main
+-2800,Antiquity,Pyramides d'Égypte,sub
+-2500,Antiquity,Empire de Sumer,sub
+-2200,Antiquity,Babylone,sub
+-1900,Antiquity,Code d'Hammurabi,sub
+-1600,Antiquity,Civilisation mycénienne,sub
+-1300,Antiquity,Exode,sub
+-1000,Antiquity,Royaume d'Israël,sub
+-753,Antiquity,Fondation de Rome,sub
+-700,Antiquity,Homère,sub
+-400,Antiquity,Âge d'Or Grec,sub
+-100,Antiquity,Jules César,sub
+200,Antiquity,Empire romain,sub
+300,Antiquity,Constantin,sub
+350,Antiquity,Division de l'Empire,sub
+430,Antiquity,Saint Augustin,sub
+460,Antiquity,Chute imminente,sub
+476,Middle Ages,Chute de Rome,main
+500,Middle Ages,Royaume Franc,sub
+550,Middle Ages,Justinien,sub
+600,Middle Ages,Expansion arabe,sub
+650,Middle Ages,Conquêtes musulmanes,sub
+700,Middle Ages,Âge des ténèbres,sub
+750,Middle Ages,Dynastie abbasside,sub
+800,Middle Ages,Charlemagne,sub
+850,Middle Ages,Invasions vikings,sub
+900,Middle Ages,Féodalité,sub
+950,Middle Ages,Otton Ier,sub
+1000,Middle Ages,Châteaux Forts,sub
+1100,Middle Ages,Croisades,sub
+1200,Middle Ages,Cathédrales gothiques,sub
+1300,Middle Ages,Dante,sub
+1400,Middle Ages,Guerre de Cent Ans,sub
+1450,Middle Ages,Gutenberg,sub
+1492,Renaissance,Découverte des Amériques,main
+1480,Renaissance,Botticelli,sub
+1510,Renaissance,Michel-Ange,sub
+1515,Renaissance,Marignan,sub
+1530,Renaissance,Réforme protestante,sub
+1550,Renaissance,Copernic,sub
+1580,Renaissance,Montaigne,sub
+1610,Renaissance,Galilée,sub
+1680,Renaissance,Louis XIV,sub
+1720,Renaissance,Siècle des Lumières,sub
+1750,Renaissance,Encyclopédie,sub
+1770,Renaissance,Révolution industrielle naissante,sub
+1789,Industrial Revolution,Révolution Française,main
+1810,Industrial Revolution,Napoléon,sub
+1835,Industrial Revolution,Chemins de fer,sub
+1850,Industrial Revolution,Machine à Vapeur,sub
+1880,Industrial Revolution,Électricité,sub
+1914,Industrial Revolution,Première Guerre Mondiale,sub
+1920,Industrial Revolution,Entre-deux-guerres,sub
+1945,Modern,Fin de la Seconde Guerre,main
+1970,Modern,Premier Homme sur la Lune,sub
+1990,Modern,Internet,sub
+2005,Modern,Smartphones,sub
+2015,Modern,Intelligence Artificielle,sub
+2026,Modern,Aujourd'hui,sub
