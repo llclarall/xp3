@@ -69,10 +69,10 @@ function calculateAndDisplayMilestones(eraName, milestones, slideClass, startDat
         if (position < 0 || position > 100) return;
         
         if (milestone.importance === 'main') {
-            // Marqueur principal
+            // Marqueur principal - toujours au début de l'époque
             const mainMarker = document.createElement('div');
             mainMarker.className = 'marker-main dynamic-milestone';
-            mainMarker.style.left = position === 0 ? '20px' : position + '%';
+            mainMarker.style.left = '20px'; // Toujours au début
             mainMarker.textContent = formatDate(milestone.date);
             mainMarker.title = milestone.title;
             timelineMarkers.appendChild(mainMarker);
