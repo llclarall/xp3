@@ -45,8 +45,8 @@ async function loadObjectsFromCSV() {
             const range = eraInfo.end - eraInfo.start;
             const calculatedPosition = ((date - eraInfo.start) / range) * 100;
             
-            // Clamp la position entre 5% et 95% pour éviter les débordements
-            const finalPosition = Math.max(5, Math.min(95, calculatedPosition));
+                /* // Clamp la position entre 0.5% et 99% pour éviter les débordements
+                const finalPosition = Math.max(0.5, Math.min(99, calculatedPosition)); */
             
             // Trouver le conteneur de l'époque
             const eraSlide = document.querySelector(`.${eraInfo.slideClass}`);
@@ -55,13 +55,13 @@ async function loadObjectsFromCSV() {
             // Créer l'élément objet
             const objectDiv = document.createElement('div');
             objectDiv.className = 'repeat-decor dynamic-object';
-            objectDiv.style.left = finalPosition + '%';
+            objectDiv.style.left = calculatedPosition + '%';
             objectDiv.setAttribute('data-date', date);
             
             // Si c'est un objet avec info, créer un prop-group au lieu d'un repeat-decor
             if (hasInfo) {
                 objectDiv.className = 'prop-group dynamic-object';
-                objectDiv.style.left = finalPosition + '%';
+                objectDiv.style.left = calculatedPosition + '%';
                 
                 // Emoji principal
                 const emojiDiv = document.createElement('div');

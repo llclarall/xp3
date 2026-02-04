@@ -1,43 +1,43 @@
 Date,Era,Object_Emoji,Object_Image,Object_Name,Has_Info,Info_Text
--29900,Prehistory,🪵,images/objets/wood.png,Wood,true,Le bois servait à fabriquer des outils et des armes pour la chasse.
--27000,Prehistory,🪨,images/objets/rock.png,Rock,false,
--24000,Prehistory,🌲,images/objets/tree.png,Tree,false,
--21000,Prehistory,🦴,images/objets/bone.png,Bone,false,
--18000,Prehistory,🌲,images/objets/tree.png,Tree,false,
--15000,Prehistory,🪨,images/objets/rock.png,Rock,false,
--12000,Prehistory,🔥,images/objets/fire.png,Fire,true,Le feu protégeait les hommes des bêtes sauvages et permettait de cuire les aliments.
--9000,Prehistory,🦣,images/objets/mammoth.png,Mammoth,true,Les mammouths pesaient jusqu'à 6 tonnes et ont disparu il y a 10 000 ans.
--6000,Prehistory,🌲,images/objets/tree.png,Tree,false,
--3000,Prehistory,🦴,images/objets/bone.png,Bone,true,Les os d'animaux servaient à fabriquer des aiguilles et des bijoux.
--2700,Antiquity,🏺,images/objets/amphora.png,Vase,false,
--2200,Antiquity,🌴,images/objets/palm-tree.png,Palm Tree,false,
--1500,Antiquity,🐪,images/objets/camel.png,Camel,true,Les chameaux pouvaient parcourir 160 km par jour dans le désert sans boire.
--1000,Antiquity,⚱️,images/objets/urn.png,Amphora,false,
--500,Antiquity,📜,images/objets/scroll.png,Scroll,true,Les rouleaux de papyrus permettaient de conserver le savoir.
-0,Antiquity,🌴,images/objets/palm-tree.png,Palm Tree,false,
-200,Antiquity,🏺,images/objets/amphora.png,Vase,false,
-350,Antiquity,🗿,images/objets/moai.png,Statue,false,
-400,Antiquity,🏛️,images/objets/building.png,Coliseum,true,Le Colisée de Rome pouvait accueillir 50 000 personnes !
-450,Antiquity,🐪,images/objets/camel.png,Camel,false,
-600,Middle Ages,🌳,images/objets/deciduous-tree.png,Tree,false,
-750,Middle Ages,⚔️,images/objets/swords.png,Sword,false,
-900,Middle Ages,🏰,images/objets/castle.png,Castle,true,Les ponts-levis servaient à fermer l'entrée du château.
-1050,Middle Ages,🌳,images/objets/deciduous-tree.png,Tree,false,
-1200,Middle Ages,🏇,images/objets/horse.png,Knight,true,Les chevaliers portaient une armure de 25 kg et s'entraînaient dès l'enfance.
-1350,Middle Ages,🛡️,images/objets/shield.png,Shield,false,
-1450,Middle Ages,🌳,images/objets/deciduous-tree.png,Tree,false,
-1520,Renaissance,📖,images/objets/book.png,Book,true,L'imprimerie de Gutenberg a permis de produire des livres en masse.
-1560,Renaissance,🎨,images/objets/palette.png,Art Palette,false,
-1620,Renaissance,🔭,images/objets/telescope.png,Telescope,true,Galilée a découvert les lunes de Jupiter avec son télescope en 1610.
-1680,Renaissance,🎻,images/objets/violin.png,Violin,false,
-1730,Renaissance,⛪,images/objets/church.png,Church,false,
-1770,Renaissance,🎭,images/objets/theater.png,Theater,false,
-1810,Industrial Revolution,⚙️,images/objets/gear.png,Gear,false,
-1850,Industrial Revolution,🏭,images/objets/factory.png,Factory,true,La machine à vapeur a révolutionné la production.
-1870,Industrial Revolution,🔩,images/objets/bolt.png,Bolt,false,
-1900,Industrial Revolution,🚂,images/objets/train.png,Train,true,Le premier train à vapeur atteignait 45 km/h en 1825.
-1930,Industrial Revolution,⚙️,images/objets/gear.png,Gear,false,
-1960,Modern,🏬,images/objets/store.png,Smartphone,false,
-1975,Modern,🚀,images/objets/rocket.png,Rocket,true,Neil Armstrong a marché sur la Lune en 1969 grâce à la fusée Saturn V.
-1995,Modern,💻,images/objets/computer.png,Computer,false,
-2007,Modern,📱,images/objets/phone.png,Mobile Phone,true,L'Iphone a été commercialisé pour la 1ère fois en 2007.
+-29950,Prehistory,🪵,images/objects/wood.png,Wood,true,Le bois servait à fabriquer des outils et des armes pour la chasse.
+-27000,Prehistory,🪨,images/objects/rock.png,Rock,false,
+-24000,Prehistory,🌲,images/objects/tree.png,Tree,false,
+-21000,Prehistory,🦴,images/objects/bone.png,Bone,false,
+-18000,Prehistory,🌲,images/objects/tree.png,Tree,false,
+-15000,Prehistory,🪨,images/objects/rock.png,Rock,false,
+-12000,Prehistory,🔥,images/objects/fire.png,Fire,true,Le feu protégeait les hommes des bêtes sauvages et permettait de cuire les aliments.
+-9000,Prehistory,🦣,images/objects/mammoth.png,Mammoth,true,Les mammouths pesaient jusqu'à 6 tonnes et ont disparu il y a 10 000 ans.
+-6000,Prehistory,🌲,images/objects/tree.png,Tree,false,
+-3000,Prehistory,🦴,images/objects/bone.png,Bone,true,Les os d'animaux servaient à fabriquer des aiguilles et des bijoux.
+-2950,Antiquity,🐪,images/objects/camel.png,Camel,true,Les chameaux pouvaient parcourir 160 km par jour dans le désert sans boire.
+-2200,Antiquity,🌴,images/objects/palm-tree.png,Palm Tree,false,
+-1500,Antiquity,🏺,images/objects/amphora.png,Vase,false,
+-1000,Antiquity,⚱️,images/objects/urn.png,Amphora,false,
+-500,Antiquity,📜,images/objects/scroll.png,Scroll,true,Les rouleaux de papyrus permettaient de conserver le savoir.
+0,Antiquity,🌴,images/objects/palm-tree.png,Palm Tree,false,
+200,Antiquity,🏺,images/objects/amphora.png,Vase,false,
+350,Antiquity,🗿,images/objects/moai.png,Statue,false,
+400,Antiquity,🏛️,images/objects/building.png,Coliseum,true,Le Colisée de Rome pouvait accueillir 50 000 personnes !
+450,Antiquity,🐪,images/objects/camel.png,Camel,false,
+600,Middle Ages,🏰,images/objects/castle.png,Castle,true,Les ponts-levis servaient à fermer l'entrée du château.
+750,Middle Ages,⚔️,images/objects/swords.png,Sword,false,
+900,Middle Ages,🌳,images/objects/deciduous-tree.png,Tree,false,
+1050,Middle Ages,🌳,images/objects/deciduous-tree.png,Tree,false,
+1200,Middle Ages,🏇,images/objects/horse.png,Knight,true,Les chevaliers portaient une armure de 25 kg et s'entraînaient dès l'enfance.
+1350,Middle Ages,🛡️,images/objects/shield.png,Shield,false,
+1450,Middle Ages,🌳,images/objects/deciduous-tree.png,Tree,false,
+1520,Renaissance,📖,images/objects/book.png,Book,true,L'imprimerie de Gutenberg a permis de produire des livres en masse.
+1560,Renaissance,🎨,images/objects/palette.png,Art Palette,false,
+1620,Renaissance,🔭,images/objects/telescope.png,Telescope,true,Galilée a découvert les lunes de Jupiter avec son télescope en 1610.
+1680,Renaissance,🎻,images/objects/violin.png,Violin,false,
+1730,Renaissance,⛪,images/objects/church.png,Church,false,
+1770,Renaissance,🎭,images/objects/theater.png,Theater,false,
+1810,Industrial Revolution,⚙️,images/objects/gear.png,Gear,false,
+1850,Industrial Revolution,🏭,images/objects/factory.png,Factory,true,La machine à vapeur a révolutionné la production.
+1870,Industrial Revolution,🔩,images/objects/bolt.png,Bolt,false,
+1900,Industrial Revolution,🚂,images/objects/train.png,Train,true,Le premier train à vapeur atteignait 45 km/h en 1825.
+1930,Industrial Revolution,⚙️,images/objects/gear.png,Gear,false,
+1960,Modern,🏬,images/objects/store.png,Smartphone,false,
+1975,Modern,🚀,images/objects/rocket.png,Rocket,true,Neil Armstrong a marché sur la Lune en 1969 grâce à la fusée Saturn V.
+1995,Modern,💻,images/objects/computer.png,Computer,false,
+2007,Modern,📱,images/objects/phone.png,Mobile Phone,true,L'Iphone a été commercialisé pour la 1ère fois en 2007.
