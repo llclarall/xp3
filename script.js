@@ -18,6 +18,45 @@ const timelineStart = -30000;
 const timelineEnd = 2026;
 const timelineRange = timelineEnd - timelineStart;
 
+// --- PERSONNAGES À PLACER ---
+const characters = [
+    {
+        id: 'liko',
+        name: 'Liko',
+        displayName: "l'Homme de Cro-Magnon 🧔",
+        img: 'images/Liko.png',
+        targetYear: -29000,
+        targetTolerance: 100
+    },
+    {
+        id: 'marco',
+        name: 'Marco',
+        displayName: "Marco Polo 🧭",
+        img: 'images/Marco.png',
+        targetYear: 1600,
+        targetTolerance: 50
+    }
+];
+
+let currentCharacterIndex = 0;
+
+function getCurrentCharacter() {
+    return characters[currentCharacterIndex];
+}
+
+function updateMissionText() {
+    const current = getCurrentCharacter();
+    const missionContent = document.querySelector('.mission-bubble .m-content');
+    if (missionContent && current) {
+        missionContent.innerHTML = `Place ${current.displayName} <br>dans son époque`;
+    }
+}
+
+// Fonction pour convertir une année en pourcentage de scroll
+function yearToScrollPct(year) {
+    return ((year - timelineStart) / timelineRange) * 100;
+}
+
 // Proportions flex des époques (basées sur leurs durées réelles)
 const eraFlexValues = [337.5, 43.75, 12.5, 3.75, 1.875, 1];
 const totalFlex = eraFlexValues.reduce((a, b) => a + b, 0);
@@ -104,6 +143,73 @@ function getScrollSensitivity(scrollPct) {
     // On multiplie par eraWidth pour adapter : époque large = scroll rapide
     const baseSensitivity = 20; // valeur de référence
     return baseSensitivity * (eraWidth / 10); // Ajuster le diviseur pour contrôler l'intensité
+}
+
+// Créer les silhouettes pour tous les personnages
+function createSilhouettes() {
+    characters.forEach((char, index) => {
+        const targetScrollPct = yearToScrollPct(char.targetYear);
+        const targetWorldPosVW = (targetScrollPct / 100) * worldSpanVW;
+        const targetStaticPct = mapToStaticScale(targetScrollPct);
+        
+        // Silhouette dans le monde
+        const worldSilhouette = document.createElement('div');
+        worldSilhouette.className = 'char-silhouette-world';
+        worldSilhouette.id = `${char.id}-silhouette-world`;
+        worldSilhouette.dataset.charIndex = index;
+        worldSilhouette.style.left = targetWorldPosVW + 'vw';
+        worldSilhouette.innerHTML = `<img src="images/${char.id}-vide.png" alt="${char.name} silhouette">`;
+        world.appendChild(worldSilhouette);
+        
+        // Silhouette sur la frise statique
+        const scaleBar = document.querySelector('.scale-bar');
+        if (scaleBar) {
+            const scaleSilhouette = document.createElement('div');
+            scaleSilhouette.className = 'char-silhouette-scale';
+            scaleSilhouette.id = `${char.id}-silhouette-scale`;
+            scaleSilhouette.dataset.charIndex = index;
+            scaleSilhouette.style.left = targetStaticPct + '%';
+            scaleSilhouette.innerHTML = `<img src="images/${char.id}-vide.png" alt="${char.name} silhouette">`;
+            scaleBar.appendChild(scaleSilhouette);
+        }
+        
+        char.worldEl = worldSilhouette;
+        char.scaleEl = scaleBar ? scaleBar.querySelector(`#${char.id}-silhouette-scale`) : null;
+    });
+}
+
+function updateGhostImage() {
+    const current = getCurrentCharacter();
+    const ghostImg = ghost.querySelector('img') || document.createElement('img');
+    ghostImg.src = current.img;
+    ghostImg.alt = current.name;
+    if (!ghost.querySelector('img')) {
+        ghost.appendChild(ghostImg);
+    }
+}
+
+function changeToNextCharacter() {
+    currentCharacterIndex++;
+    
+    // Fermer le polaroid
+    victoryScreen.style.opacity = '0';
+    victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(0.8)';
+    
+    setTimeout(() => {
+        if (currentCharacterIndex < characters.length) {
+            // Afficher le personnage suivant
+            victoryScreen.style.display = 'none';
+            const nextChar = getCurrentCharacter();
+            const likoImg = liko.querySelector('img');
+            if (likoImg) {
+                likoImg.src = nextChar.img;
+                likoImg.alt = nextChar.name;
+            }
+            updateGhostImage();
+            liko.style.opacity = 1;
+            updateMissionText();
+        }
+    }, 400);
 }
 
 // --- MOTEUR PRINCIPAL ---
@@ -231,25 +337,66 @@ function dragEnd() {
     if(!isDrag) return;
     isDrag = false;
     ghost.style.opacity = 0;
+    const current = getCurrentCharacter();
     liko.style.opacity = 1; // Toujours réafficher Liko après le drag
 
-    // VICTOIRE : Zone Préhistoire (avant l'époque 1 = Antiquité)
-    if(scrollPct < eraStartPositions[1]) {
-        document.querySelector('.top-hud').style.display = 'none';
-        const landed = document.getElementById('liko-landed');
-        landed.style.display = 'block';
-        landed.style.left = '30%'; 
+    // VÉRIFIER LE PLACEMENT
+    const currentYear = Math.round(timelineStart + (scrollPct / 100) * timelineRange);
+    if (Math.abs(currentYear - current.targetYear) <= current.targetTolerance) {
+        // BON PLACEMENT - Remplir les silhouettes
+        liko.style.opacity = 0; // Cacher le dock de Liko
         
-        // Ajouter une vignette sur la frise statique
-        const staticPct = mapToStaticScale(scrollPct);
-        const scaleBar = document.querySelector('.scale-bar');
-        const marker = document.createElement('div');
-        marker.className = 'character-marker';
-        marker.innerHTML = '<img src="images/Liko.png" alt="Liko">';
-        marker.style.left = staticPct + '%';
-        scaleBar.appendChild(marker);
+        const worldSilhouette = document.getElementById(`${current.id}-silhouette-world`);
+        const scaleSilhouette = document.getElementById(`${current.id}-silhouette-scale`);
+        if (worldSilhouette) {
+            worldSilhouette.querySelector('img').src = current.img;
+            worldSilhouette.classList.add('filled');
+        }
+        if (scaleSilhouette) {
+            scaleSilhouette.querySelector('img').src = current.img;
+            scaleSilhouette.classList.add('filled');
+        }
         
+        // Afficher le polaroid avec le bouton pour passer au personnage suivant
         setTimeout(() => {
+            const polaroidImg = victoryScreen.querySelector('#polaroid-character-img');
+            const polaroidCaption = victoryScreen.querySelector('.polaroid-caption');
+            let nextBtn = victoryScreen.querySelector('#polaroid-next-btn');
+            
+            // Mettre à jour l'image et le texte du polaroid
+            if (polaroidImg) {
+                polaroidImg.src = `images/polaroid-${current.id}.png`;
+                polaroidImg.alt = current.name;
+                polaroidImg.style.display = 'block';
+            }
+            if (polaroidCaption) {
+                polaroidCaption.textContent = `${current.name} bien placé ! 🎉`;
+            }
+            
+            // Créer ou réinitialiser le bouton
+            if (!nextBtn) {
+                nextBtn = document.createElement('button');
+                nextBtn.id = 'polaroid-next-btn';
+                nextBtn.className = 'polaroid-btn';
+                victoryScreen.querySelector('.polaroid').appendChild(nextBtn);
+            }
+            
+            if (currentCharacterIndex < characters.length - 1) {
+                // Pour les personnages intermédiaires : bouton "Personnage suivant"
+                nextBtn.textContent = 'Personnage suivant';
+                nextBtn.onclick = changeToNextCharacter;
+                nextBtn.style.display = 'block';
+            } else {
+                // Pour le dernier personnage : bouton "REJOUER"
+                nextBtn.textContent = 'REJOUER';
+                nextBtn.onclick = restartGame;
+                nextBtn.style.display = 'block';
+                if (polaroidCaption) {
+                    polaroidCaption.textContent = 'Bravo ! \nTous les persos sont de retour à leur époque !';
+                }
+            }
+            
+            // Afficher le polaroid
             victoryScreen.style.display = 'flex';
             setTimeout(() => {
                 victoryScreen.style.opacity = '1';
@@ -257,8 +404,13 @@ function dragEnd() {
             }, 50);
         }, 800);
     } else {
-        // ÉCHEC - Afficher une flèche d'aide mais garder Liko prêt pour un autre drag
-        if (scrollPct >= eraStartPositions[1]) {
+        // MAUVAIS PLACEMENT - Flèches directionnelles
+        arrowL.style.display = 'none';
+        arrowR.style.display = 'none';
+        if (currentYear < current.targetYear) {
+            arrowR.style.display = 'flex';
+            setTimeout(() => arrowR.style.display = 'none', 15000);
+        } else {
             arrowL.style.display = 'flex';
             setTimeout(() => arrowL.style.display = 'none', 15000);
         }
@@ -288,9 +440,11 @@ function restartGame() {
     scrollPct = 0;
     isDrag = false;
     isWorldDrag = false;
+    currentCharacterIndex = 0;
     
     // Cacher l'écran de victoire
     victoryScreen.style.opacity = '0';
+    victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(0.8)';
     setTimeout(() => {
         victoryScreen.style.display = 'none';
     }, 500);
@@ -298,14 +452,39 @@ function restartGame() {
     // Réafficher l'UI de mission
     document.querySelector('.top-hud').style.display = 'block';
     
-    // Remettre Liko dans son dock
+    // Remettre le premier personnage dans son dock
+    const firstChar = characters[0];
     liko.style.opacity = 1;
+    const likoImg = liko.querySelector('img');
+    if (likoImg) {
+        likoImg.src = firstChar.img;
+        likoImg.alt = firstChar.name;
+    }
+    updateGhostImage();
+    
     const likoLanded = document.getElementById('liko-landed');
     likoLanded.style.display = 'none';
     
+    // remettre les images vides
+    characters.forEach(char => {
+        if (char.worldEl) {
+            char.worldEl.classList.remove('filled');
+            const worldImg = char.worldEl.querySelector('img');
+            if (worldImg) worldImg.src = `images/${char.id}-vide.png`;
+        }
+        if (char.scaleEl) {
+            char.scaleEl.classList.remove('filled');
+            const scaleImg = char.scaleEl.querySelector('img');
+            if (scaleImg) scaleImg.src = `images/${char.id}-vide.png`;
+        }
+    });
+    
+    updateMissionText();
     // Remettre la vue au début
     update();
 }
 
 // Lancement
 update();
+createSilhouettes();
+updateMissionText();
