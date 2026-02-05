@@ -26,7 +26,7 @@ const characters = [
         displayName: "l'Homme de Cro-Magnon 🧔",
         img: 'images/Liko.png',
         targetYear: -29000,
-        targetTolerance: 100
+        targetTolerance: 80
     },
     {
         id: 'marco',
@@ -34,7 +34,7 @@ const characters = [
         displayName: "Marco Polo 🧭",
         img: 'images/Marco.png',
         targetYear: 1600,
-        targetTolerance: 50
+        targetTolerance: 30
     }
 ];
 
@@ -123,6 +123,7 @@ let scrollPct = 0;
 let isDrag = false;     // Drag & Drop de Liko
 let isWorldDrag = false; // Drag du Monde (Swipe)
 let lastMouseX = 0;     // Pour calculer le delta du swipe
+let lastDeltaTime = 0;  // Pour calculer la vélocité
 
 // Fonction pour obtenir la sensibilité en fonction de l'époque actuelle
 function getScrollSensitivity(scrollPct) {
@@ -189,9 +190,27 @@ function updateGhostImage() {
 }
 
 function changeToNextCharacter() {
+    const previousChar = characters[currentCharacterIndex]; // Sauvegarder le personnage précédent
     currentCharacterIndex++;
     
-    // Fermer le polaroid
+    // Créer un polaroid souvenir mini et le placer en bas à gauche
+    const polaroidImg = victoryScreen.querySelector('#polaroid-character-img');
+    const polaroidCaption = victoryScreen.querySelector('.polaroid-caption');
+    
+    if (polaroidImg && polaroidImg.style.display !== 'none') {
+        // Créer une mini version du polaroid souvenir
+        const memoryPolaroid = document.createElement('div');
+        memoryPolaroid.className = 'memory-polaroid';
+        memoryPolaroid.innerHTML = `
+            <div class="memory-polaroid-inner">
+                <img src="${polaroidImg.src}" alt="${previousChar.name}">
+                <div class="memory-caption">${previousChar.name}</div>
+            </div>
+        `;
+        document.body.appendChild(memoryPolaroid);
+    }
+    
+    // Fermer le polaroid principal
     victoryScreen.style.opacity = '0';
     victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(0.8)';
     
@@ -271,6 +290,7 @@ gameViewport.addEventListener('mousedown', (e) => {
 
     isWorldDrag = true;
     lastMouseX = e.clientX;
+    lastDeltaTime = performance.now();
     gameViewport.style.cursor = 'grabbing'; // Curseur "main fermée"
 });
 
@@ -279,14 +299,24 @@ window.addEventListener('mousemove', (e) => {
     if (isWorldDrag) {
         e.preventDefault();
         const delta = e.clientX - lastMouseX;
+        const currentTime = performance.now();
+        const deltaTime = currentTime - lastDeltaTime;
+        
+        // Calculer la vélocité (pixels par milliseconde)
+        const velocity = deltaTime > 0 ? Math.abs(delta) / deltaTime : 0;
+        
+        // Coefficient de vélocité : scroll lent = 0.5x, scroll rapide = 1x
+        // Clampé entre 0.5 et 1.0
+        const velocityFactor = Math.max(0.1, Math.min(1.0, velocity * 2));
         
         // Sensibilité adaptative : ajustée en fonction de la taille de l'époque actuelle
         // Préhistoire (large) = scroll rapide, Moderne (petite) = scroll lent
         const sensitivity = getScrollSensitivity(scrollPct);
-        const pctChange = -(delta / window.innerWidth) * sensitivity;
+        const pctChange = -(delta / window.innerWidth) * sensitivity * velocityFactor;
         
         scrollPct += pctChange;
         lastMouseX = e.clientX;
+        lastDeltaTime = currentTime;
         update();
     }
 

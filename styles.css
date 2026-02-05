@@ -507,6 +507,53 @@ body {
 }
 .tape { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 180px; height: 50px; background: rgba(255,255,255,0.6); box-shadow: 0 2px 5px rgba(0,0,0,0.1); transform: rotate(2deg); }
 
+/* Mini polaroid souvenir */
+.memory-polaroid {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 500;
+    animation: slideInLeft 0.5s ease-out;
+}
+
+.memory-polaroid-inner {
+    background: white;
+    padding: 8px 8px 40px 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform: rotate(-5deg);
+    width: 120px;
+    text-align: center;
+}
+
+.memory-polaroid-inner img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    background: #f0f0f0;
+}
+
+.memory-caption {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 11px;
+    color: #333;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@keyframes slideInLeft {
+    0% {
+        transform: translateX(-150px) rotate(-5deg);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0) rotate(-5deg);
+        opacity: 1;
+    }
+}
+
 /* ANIMATIONS */
 @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
