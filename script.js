@@ -124,6 +124,8 @@ let isDrag = false;     // Drag & Drop de Liko
 let isWorldDrag = false; // Drag du Monde (Swipe)
 let lastMouseX = 0;     // Pour calculer le delta du swipe
 let lastDeltaTime = 0;  // Pour calculer la vélocité
+let momentumVelocity = 0; // Vélocité pour l'inertie
+let momentumAnimationId = null; // ID de l'animation inertie
 
 // Fonction pour obtenir la sensibilité en fonction de l'époque actuelle
 function getScrollSensitivity(scrollPct) {
@@ -314,6 +316,9 @@ window.addEventListener('mousemove', (e) => {
         const sensitivity = getScrollSensitivity(scrollPct);
         const pctChange = -(delta / window.innerWidth) * sensitivity * velocityFactor;
         
+        // Sauvegarder la vélocité pour l'inertie au mouseup
+        momentumVelocity = pctChange;
+        
         scrollPct += pctChange;
         lastMouseX = e.clientX;
         lastDeltaTime = currentTime;
@@ -328,10 +333,49 @@ window.addEventListener('mousemove', (e) => {
     }
 });
 
+// Fonction pour appliquer l'inertie au scroll
+function applyMomentum() {
+    if (Math.abs(momentumVelocity) < 0.01) {
+        // Arrêter l'inertie quand elle est négligeable
+        momentumVelocity = 0;
+        momentumAnimationId = null;
+        return;
+    }
+    
+    // Appliquer la vélocité avec friction (décélération progressive)
+    // Si on est en Préhistoire, friction plus forte pour ralentir l'inertie
+    const isInPrehistory = scrollPct < eraStartPositions[1]; // Avant l'Antiquité
+    const friction = isInPrehistory ? 0.88 : 0.95; // Préhistoire = freinage plus fort
+    
+    scrollPct += momentumVelocity;
+    momentumVelocity *= friction;
+    
+    // Bloquer aux limites
+    scrollPct = Math.max(0, Math.min(100, scrollPct));
+    
+    update();
+    
+    // Continuer l'animation
+    momentumAnimationId = requestAnimationFrame(applyMomentum);
+}
+
 window.addEventListener('mouseup', () => {
     if (isWorldDrag) {
         isWorldDrag = false;
         gameViewport.style.cursor = 'default';
+        
+        // Arrêter l'inertie précédente si elle existe
+        if (momentumAnimationId) {
+            cancelAnimationFrame(momentumAnimationId);
+        }
+        
+        // Lancer l'inertie avec la vélocité courante
+        if (Math.abs(momentumVelocity) > 0.01) {
+            momentumAnimationId = requestAnimationFrame(applyMomentum);
+        } else {
+            momentumVelocity = 0;
+            momentumAnimationId = null;
+        }
     }
     if (isDrag) {
         dragEnd();
