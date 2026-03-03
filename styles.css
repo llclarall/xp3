@@ -150,8 +150,11 @@ body {
 
 /* --- UI HAUTE (MISSION) --- */
 .top-hud {
-    position: absolute; top: 30px; left: 30px;
+    position: absolute; top: 25px; left: 30px;
     z-index: 100;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
 }
 .mission-bubble {
     background: var(--glass); backdrop-filter: blur(10px);
@@ -159,7 +162,20 @@ body {
     padding: 15px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 .m-title { font-size: 14px; text-transform: uppercase; color: #666; font-weight: bold; margin-bottom: 5px; }
-.m-content { font-size: 24px; color: var(--text-dark); font-weight: 800; }
+.m-content { font-size: 24px; color: var(--text-dark); font-weight: 800; display: block; }
+
+.children-names {
+    display: flex; flex-direction: column; gap: 15px; margin-top: 10px; color: white; font-size: 25px; text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.children-names div {
+    display: flex; gap: 30px; flex-wrap: wrap;
+}
+
+.children-names h4 {
+    font-size: 24px; text-transform: uppercase; font-weight: bold; color: var(--primary);
+    text-shadow: 0 2px 5px rgba(0,0,0,0.3); margin: 0; letter-spacing: 3px;
+}
 
 /* --- ERA INDICATOR --- */
 .era-indicator { 
@@ -256,7 +272,7 @@ body {
 .btn-mod { background: var(--c-mod); }
 
 /* --- FRISE STATIQUE À L'ÉCHELLE --- */
-.static-scale { position: absolute; left: 30px; right: 30px; top: 150px; z-index: 120; pointer-events: none; }
+.static-scale { position: absolute; left: 30px; right: 30px; top: 160px; z-index: 120; pointer-events: none; }
 .scale-card { background: rgba(0,0,0,0.6); border: 2px solid rgba(255,255,255,0.25); border-radius: 18px; padding: 10px 14px; box-shadow: 0 15px 35px rgba(0,0,0,0.35); }
 .scale-title { color: white; font-weight: 900; font-size: 14px; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; opacity: 0.85; }
 .scale-bar { position: relative; display: flex; height: 44px; border-radius: 12px; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); box-sizing: border-box; }

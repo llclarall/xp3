@@ -23,7 +23,7 @@ const characters = [
     {
         id: 'liko',
         name: 'Liko',
-        displayName: "l'Homme de Cro-Magnon 🧔",
+        displayName: "l'Homme de Cro-Magnon",
         img: 'images/Liko.png',
         targetYear: -29000,
         targetTolerance: 80
@@ -31,7 +31,7 @@ const characters = [
     {
         id: 'marco',
         name: 'Marco',
-        displayName: "Marco Polo 🧭",
+        displayName: "Marco Polo",
         img: 'images/Marco.png',
         targetYear: 1600,
         targetTolerance: 30
@@ -524,7 +524,11 @@ function restartGame() {
     }, 500);
     
     // Réafficher l'UI de mission
-    document.querySelector('.top-hud').style.display = 'block';
+    document.querySelector('.top-hud').style.display = 'flex';
+    
+    // Supprimer tous les mini polaroïds souvenirs
+    const memoryPolaroids = document.querySelectorAll('.memory-polaroid');
+    memoryPolaroids.forEach(polaroid => polaroid.remove());
     
     // Remettre le premier personnage dans son dock
     const firstChar = characters[0];
