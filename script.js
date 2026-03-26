@@ -12,6 +12,29 @@ const startOverlay = document.getElementById('start-overlay');
 const startMissionContent = document.getElementById('start-mission-content');
 const startGameBtn = document.getElementById('start-game-btn');
 
+// --- AUDIO SFX ---
+const sfx = {
+    mission: new Audio('sons/mission.wav'),
+    scroll: new Audio('sons/scroll.wav'),
+    good: new Audio('sons/bien joue.wav'),
+    hintLeft: new Audio('sons/indice-gauche.wav'),
+    hintRight: new Audio('sons/indice-droite.wav')
+};
+
+Object.values(sfx).forEach((value) => {
+    if (value instanceof Audio) {
+        value.preload = 'auto';
+    }
+});
+function playSfx(audio, volume = 1) {
+    if (!audio) return;
+    audio.volume = Math.max(0, Math.min(1, volume));
+    audio.currentTime = 0;
+    audio.play().catch(() => {
+        // Ignore autoplay/user-gesture blocks silently
+    });
+}
+
 // Éléments de la frise statique
 const scalePointer = document.getElementById('scale-pointer');
 const scaleCursor = document.getElementById('scale-cursor');
@@ -67,6 +90,7 @@ function startGame() {
     if (startOverlay) {
         startOverlay.classList.add('hidden');
     }
+    playSfx(sfx.mission, 0.8);
 }
 
 // Fonction pour convertir une année en pourcentage de scroll
@@ -266,7 +290,7 @@ function update() {
     if (scrollPct >= eraStartPositions[eraStartPositions.length - 1]) {
         eraIdx = eraStartPositions.length - 1;
     }
-    
+
     if (eraIndicator) {
         const isIndustrialEra = eraIdx === 4;
         eraIndicator.textContent = isIndustrialEra ? 'RÉVOLUTION\nINDUSTRIELLE' : eraNames[eraIdx];
@@ -296,6 +320,7 @@ function update() {
 // Saut vers une époque spécifique (0-5)
 window.jumpToEra = (eraIndex) => { 
     if (!hasGameStarted) return;
+    playSfx(sfx.scroll, 0.35);
     scrollPct = eraStartPositions[eraIndex]; 
     update(); 
 }
@@ -322,6 +347,7 @@ gameViewport.addEventListener('mousedown', (e) => {
         isDrag) return;
 
     isWorldDrag = true;
+    playSfx(sfx.scroll, 0.2);
     lastMouseX = e.clientX;
     lastDeltaTime = performance.now();
     gameViewport.style.cursor = 'grabbing'; // Curseur "main fermée"
@@ -450,6 +476,8 @@ function dragEnd() {
     // VÉRIFIER LE PLACEMENT
     const currentYear = Math.round(timelineStart + (scrollPct / 100) * timelineRange);
     if (Math.abs(currentYear - current.targetYear) <= current.targetTolerance) {
+        playSfx(sfx.good, 0.9);
+
         // BON PLACEMENT - Remplir les silhouettes
         liko.style.opacity = 0; // Cacher le dock de Liko
         
@@ -515,9 +543,11 @@ function dragEnd() {
         arrowL.style.display = 'none';
         arrowR.style.display = 'none';
         if (currentYear < current.targetYear) {
+            playSfx(sfx.hintRight, 0.85);
             arrowR.style.display = 'flex';
             setTimeout(() => arrowR.style.display = 'none', 15000);
         } else {
+            playSfx(sfx.hintLeft, 0.85);
             arrowL.style.display = 'flex';
             setTimeout(() => arrowL.style.display = 'none', 15000);
         }
@@ -551,7 +581,6 @@ function restartGame() {
     isDrag = false;
     isWorldDrag = false;
     currentCharacterIndex = 0;
-    
     // Cacher l'écran de victoire
     victoryScreen.style.opacity = '0';
     victoryScreen.querySelector('.polaroid').style.transform = 'rotate(-3deg) scale(0.8)';
@@ -596,6 +625,7 @@ function restartGame() {
     updateMissionText();
     // Remettre la vue au début
     update();
+    playSfx(sfx.mission, 0.8);
 }
 
 // Lancement
