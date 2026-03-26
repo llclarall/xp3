@@ -58,7 +58,7 @@ async function loadObjectsFromCSV() {
             objectDiv.style.left = calculatedPosition + '%';
             objectDiv.setAttribute('data-date', date);
             
-            // Si c'est un objet avec info, créer un prop-group au lieu d'un repeat-decor
+            // Les objets sont uniquement visuels (sans hotspot interactif)
             if (hasInfo) {
                 objectDiv.className = 'prop-group dynamic-object';
                 objectDiv.style.left = calculatedPosition + '%';
@@ -68,19 +68,6 @@ async function loadObjectsFromCSV() {
                 emojiDiv.className = 'prop-emoji';
                 emojiDiv.textContent = objectEmoji;
                 objectDiv.appendChild(emojiDiv);
-                
-                // Bouton info
-                const infoBtn = document.createElement('div');
-                infoBtn.className = 'hotspot-btn';
-                infoBtn.textContent = '?';
-                infoBtn.onclick = function() { toggleInfo(this); };
-                objectDiv.appendChild(infoBtn);
-                
-                // Bulle d'info
-                const infoBubble = document.createElement('div');
-                infoBubble.className = 'info-bubble';
-                infoBubble.textContent = infoText;
-                objectDiv.appendChild(infoBubble);
             } else {
                 // Simple décor répétitif
                 objectDiv.textContent = objectEmoji;
