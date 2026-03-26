@@ -23,6 +23,84 @@ body {
     user-select: none; touch-action: none; display: flex; flex-direction: column;
 }
 
+body:not(.game-started) .top-hud,
+body:not(.game-started) .bottom-hud,
+body:not(.game-started) .char-dock,
+body:not(.game-started) .static-scale,
+body:not(.game-started) .era-indicator,
+body:not(.game-started) .era-labels,
+body:not(.game-started) #arrow-left,
+body:not(.game-started) #arrow-right,
+body:not(.game-started) #ghost {
+    display: none !important;
+}
+
+.start-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: radial-gradient(circle at center, rgba(22, 28, 36, 0.72) 0%, rgba(0, 0, 0, 0.88) 70%);
+    backdrop-filter: blur(6px);
+}
+
+.start-card {
+    width: min(760px, 100%);
+    background: linear-gradient(160deg, rgba(255,255,255,0.97) 0%, rgba(245,249,255,0.97) 100%);
+    border: 4px solid rgba(255, 255, 255, 0.95);
+    border-radius: 26px;
+    box-shadow: 0 28px 70px rgba(0,0,0,0.48), 0 0 30px rgba(255, 215, 0, 0.3);
+    text-align: center;
+    padding: 42px 36px;
+}
+
+.start-mission-title {
+    font-size: clamp(22px, 3vw, 32px);
+    text-transform: uppercase;
+    font-weight: 900;
+    color: #3f5265;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+.start-mission-content {
+    font-size: clamp(30px, 4.2vw, 50px);
+    line-height: 1.15;
+    color: #203040;
+    font-weight: 900;
+    margin-bottom: 30px;
+    text-wrap: balance;
+}
+
+.start-game-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 14px 38px;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 900;
+    color: #1f2a36;
+    background: linear-gradient(135deg, #ffd74f 0%, #ffbe2e 100%);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.32), inset 0 2px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.start-game-btn:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 16px 34px rgba(0,0,0,0.4), inset 0 2px 0 rgba(255,255,255,0.7);
+}
+
+.start-game-btn:active {
+    transform: translateY(1px) scale(0.99);
+}
+
+.start-overlay.hidden {
+    display: none;
+}
+
 /* --- 1. LE MONDE (ARRIÈRE-PLAN) --- */
 #game-viewport { 
     position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
@@ -179,7 +257,12 @@ body {
 
 /* --- ERA INDICATOR --- */
 .era-indicator { 
-    position: fixed; top: 30px; right: 30px; font-size: 4.2vw; z-index: 95; font-weight: 900; color: rgba(255, 255, 255, 0.54);text-transform: uppercase; letter-spacing: 10px; pointer-events: none; 
+    position: fixed; top: 30px; right: 30px; font-size: 4.2vw; z-index: 95; font-weight: 900; color: rgba(255, 255, 255, 0.54);text-transform: uppercase; letter-spacing: 10px; pointer-events: none; white-space: pre-line; text-align: right; line-height: 1.02;
+}
+
+.era-indicator.era-indicator-small {
+    font-size: 3.3vw;
+    line-height: 1.08;
 }
 
 /* --- UI BASSE (CONTROLS - ZONE MAINS) --- */
@@ -245,6 +328,16 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.4), inset 0 2px 0 rgba(255,255,255,0.2);
 }
 
+.era-button.active-era {
+    border: 3px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.35),
+        0 0 18px rgba(255, 255, 255, 0.9),
+        0 0 34px rgba(255, 215, 0, 0.8),
+        0 8px 24px rgba(0,0,0,0.45),
+        inset 0 2px 0 rgba(255,255,255,0.45);
+}
+
 .era-button .era-emoji {
     font-size: 28px;
     flex-shrink: 0;
@@ -287,7 +380,7 @@ body {
 .scale-mod { background: var(--c-mod); }
 .scale-pointer { position: absolute; top: -8px; width: 3px; height: 60px; background: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); border-radius: 2px; pointer-events: none; transition: left 0.1s linear; }
 .scale-pointer-label { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: white; color: #2c3e50; padding: 2px 6px; border-radius: 8px; font-weight: 800; font-size: 11px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); white-space: nowrap; }
-.scale-cursor { position: absolute; top: 50%; left: 0%; transform: translateX(-50%) translateY(-50%); font-size: 26px; pointer-events: none; transition: left 0.1s linear; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4)); z-index: 10; }
+.scale-cursor { position: absolute; top: 50%; left: 0%; transform: translateX(-50%) translateY(-50%); font-size: 3rem; pointer-events: none; transition: left 0.1s linear; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4)); z-index: 10; }
 .scale-legend { display: flex; justify-content: space-between; color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 6px; }
 .scale-note { color: rgba(255,255,255,0.65); font-size: 11px; margin-top: 4px; }
 

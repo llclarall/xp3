@@ -7,6 +7,10 @@ const arrowL = document.getElementById('arrow-left');
 const arrowR = document.getElementById('arrow-right');
 const victoryScreen = document.getElementById('victory');
 const eraIndicator = document.getElementById('era-name');
+const eraButtons = document.querySelectorAll('.era-button');
+const startOverlay = document.getElementById('start-overlay');
+const startMissionContent = document.getElementById('start-mission-content');
+const startGameBtn = document.getElementById('start-game-btn');
 
 // Éléments de la frise statique
 const scalePointer = document.getElementById('scale-pointer');
@@ -39,6 +43,7 @@ const characters = [
 ];
 
 let currentCharacterIndex = 0;
+let hasGameStarted = false;
 
 function getCurrentCharacter() {
     return characters[currentCharacterIndex];
@@ -47,8 +52,20 @@ function getCurrentCharacter() {
 function updateMissionText() {
     const current = getCurrentCharacter();
     const missionContent = document.querySelector('.mission-bubble .m-content');
+    const missionText = `Place ${current.displayName} <br>dans son époque`;
     if (missionContent && current) {
-        missionContent.innerHTML = `Place ${current.displayName} <br>dans son époque`;
+        missionContent.innerHTML = missionText;
+    }
+    if (startMissionContent && current) {
+        startMissionContent.innerHTML = missionText;
+    }
+}
+
+function startGame() {
+    hasGameStarted = true;
+    document.body.classList.add('game-started');
+    if (startOverlay) {
+        startOverlay.classList.add('hidden');
     }
 }
 
@@ -250,7 +267,18 @@ function update() {
         eraIdx = eraStartPositions.length - 1;
     }
     
-    if(eraIndicator) eraIndicator.textContent = eraNames[eraIdx];
+    if (eraIndicator) {
+        const isIndustrialEra = eraIdx === 4;
+        eraIndicator.textContent = isIndustrialEra ? 'RÉVOLUTION\nINDUSTRIELLE' : eraNames[eraIdx];
+        eraIndicator.classList.toggle('era-indicator-small', isIndustrialEra);
+    }
+
+    // 1b. Mise à jour du bouton d'époque actif
+    if (eraButtons.length) {
+        eraButtons.forEach((button, index) => {
+            button.classList.toggle('active-era', index === eraIdx);
+        });
+    }
 
     // 2. Déplacement visuel du monde
     world.style.transform = `translateX(${-(scrollPct / 100) * worldSpanVW}vw)`;
@@ -267,6 +295,7 @@ function update() {
 
 // Saut vers une époque spécifique (0-5)
 window.jumpToEra = (eraIndex) => { 
+    if (!hasGameStarted) return;
     scrollPct = eraStartPositions[eraIndex]; 
     update(); 
 }
@@ -283,6 +312,8 @@ window.toggleInfo = (btn) => {
 
 // --- 1. NAVIGATION : SWIPE DU MONDE (NOUVEAU) ---
 gameViewport.addEventListener('mousedown', (e) => {
+    if (!hasGameStarted) return;
+
     // On ne lance pas le swipe si on clique sur l'UI, le perso ou un bouton
     // IMPORTANT : Si isDrag est déjà true, ne pas lancer worldDrag
     if (e.target.closest('.era-button') || 
@@ -385,6 +416,8 @@ window.addEventListener('mouseup', () => {
 
 // --- 2. GAMEPLAY : DRAG LIKO ---
 function dragStart(e) {
+    if (!hasGameStarted) return;
+
     // Empêcher tout comportement par défaut et la propagation
     e.preventDefault();
     e.stopPropagation();
@@ -494,6 +527,9 @@ function dragEnd() {
 // Listeners Liko
 liko.addEventListener('mousedown', dragStart);
 liko.addEventListener('touchstart', dragStart);
+if (startGameBtn) {
+    startGameBtn.addEventListener('click', startGame);
+}
 
 // Support tactile Liko
 window.addEventListener('touchmove', (e) => {
